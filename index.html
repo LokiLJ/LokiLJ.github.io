@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wenchuan Zhu | Portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700&family=Playfair+Display:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #FAFAFA;
+            --bg-card: #FFFFFF;
+            --text-primary: #1A1A1A;
+            --text-secondary: #6B6B6B;
+            --text-tertiary: #999999;
+            --accent: #2C2C2C;
+            --border: #E8E8E8;
+            --border-hover: #CCCCCC;
+            --tag-bg: #F0F0F0;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.06);
+            --shadow-lg: 0 8px 32px rgba(0,0,0,0.08);
+            --radius: 8px;
+            --transition: 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'DM Sans', 'Noto Sans SC', sans-serif;
+            background: var(--bg);
+            color: var(--text-primary);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ===== NAVIGATION ===== */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(250, 250, 250, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            z-index: 100;
+            padding: 0 48px;
+        }
+
+        .nav-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 64px;
+        }
+
+        .nav-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            transition: color var(--transition);
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 1.5px;
+            background: var(--text-primary);
+            transition: width var(--transition);
+        }
+
+        .nav-links a:hover { color: var(--text-primary); }
+        .nav-links a:hover::after { width: 100%; }
+
+        .lang-toggle {
+            display: flex;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            overflow: hidden;
+            font-size: 13px;
+        }
+
+        .lang-btn {
+            padding: 4px 12px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 13px;
+            color: var(--text-secondary);
+            transition: all var(--transition);
+        }
+
+        .lang-btn.active {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            padding: 160px 48px 100px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .hero-eyebrow {
+            font-size: 13px;
+            font-weight: 500;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--text-tertiary);
+            margin-bottom: 20px;
+            opacity: 0;
+            animation: fadeUp 0.6s ease forwards 0.2s;
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(40px, 6vw, 64px);
+            font-weight: 700;
+            line-height: 1.1;
+            letter-spacing: -0.03em;
+            color: var(--text-primary);
+            margin-bottom: 28px;
+            opacity: 0;
+            animation: fadeUp 0.6s ease forwards 0.35s;
+        }
+
+        .hero-desc {
+            font-size: 17px;
+            color: var(--text-secondary);
+            max-width: 560px;
+            line-height: 1.8;
+            margin-bottom: 36px;
+            opacity: 0;
+            animation: fadeUp 0.6s ease forwards 0.5s;
+        }
+
+        .hero-links {
+            display: flex;
+            gap: 16px;
+            opacity: 0;
+            animation: fadeUp 0.6s ease forwards 0.65s;
+        }
+
+        .hero-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all var(--transition);
+        }
+
+        .hero-link.primary {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        .hero-link.primary:hover {
+            background: #444;
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .hero-link.secondary {
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            background: var(--bg-card);
+        }
+
+        .hero-link.secondary:hover {
+            border-color: var(--border-hover);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .hero-link svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* ===== SECTIONS ===== */
+        section {
+            padding: 80px 48px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            margin-bottom: 48px;
+        }
+
+        .section-label {
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--text-tertiary);
+            margin-bottom: 12px;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+
+        .section-divider {
+            width: 40px;
+            height: 2px;
+            background: var(--accent);
+            margin-top: 16px;
+        }
+
+        /* ===== ABOUT ===== */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 64px;
+            align-items: start;
+        }
+
+        .about-text p {
+            color: var(--text-secondary);
+            font-size: 15px;
+            margin-bottom: 16px;
+        }
+
+        .about-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .stat-card {
+            padding: 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            transition: all var(--transition);
+        }
+
+        .stat-card:hover {
+            border-color: var(--border-hover);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .stat-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: var(--text-tertiary);
+        }
+
+        /* ===== PROJECTS ===== */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .project-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 32px;
+            transition: all var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--accent);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform var(--transition);
+        }
+
+        .project-card:hover {
+            border-color: var(--border-hover);
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-3px);
+        }
+
+        .project-card:hover::before { transform: scaleX(1); }
+
+        .project-year {
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            color: var(--text-tertiary);
+            margin-bottom: 12px;
+        }
+
+        .project-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            letter-spacing: -0.01em;
+        }
+
+        .project-desc {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .tag {
+            font-size: 12px;
+            padding: 4px 10px;
+            background: var(--tag-bg);
+            border-radius: 4px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* ===== EXPERIENCE TIMELINE ===== */
+        .timeline {
+            position: relative;
+            padding-left: 32px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 8px;
+            bottom: 8px;
+            width: 1px;
+            background: var(--border);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 40px;
+        }
+
+        .timeline-item:last-child { margin-bottom: 0; }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -36px;
+            top: 8px;
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: var(--accent);
+        }
+
+        .timeline-role {
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 2px;
+        }
+
+        .timeline-company {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .timeline-date {
+            font-size: 13px;
+            color: var(--text-tertiary);
+            margin-bottom: 12px;
+        }
+
+        .timeline-desc {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* ===== BLOG ===== */
+        .blog-placeholder {
+            background: var(--bg-card);
+            border: 1px dashed var(--border);
+            border-radius: var(--radius);
+            padding: 64px 32px;
+            text-align: center;
+        }
+
+        .blog-placeholder-icon {
+            font-size: 32px;
+            margin-bottom: 16px;
+            opacity: 0.3;
+        }
+
+        .blog-placeholder p {
+            color: var(--text-tertiary);
+            font-size: 15px;
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            padding: 48px;
+            border-top: 1px solid var(--border);
+            margin-top: 40px;
+        }
+
+        .footer-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-text {
+            font-size: 13px;
+            color: var(--text-tertiary);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 24px;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 13px;
+            transition: color var(--transition);
+        }
+
+        .footer-links a:hover { color: var(--text-primary); }
+
+        /* ===== ANIMATIONS ===== */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            nav { padding: 0 24px; }
+            .hero { padding: 130px 24px 60px; }
+            section { padding: 60px 24px; }
+            footer { padding: 36px 24px; }
+            .about-grid { grid-template-columns: 1fr; gap: 40px; }
+            .projects-grid { grid-template-columns: 1fr; }
+            .hero-links { flex-direction: column; }
+            .hero-link { justify-content: center; }
+            .nav-links { gap: 16px; }
+            .nav-links a { font-size: 13px; }
+            .footer-inner { flex-direction: column; gap: 16px; text-align: center; }
+        }
+
+        /* ===== MOBILE NAV ===== */
+        @media (max-width: 600px) {
+            .nav-links .nav-text { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<nav>
+    <div class="nav-inner">
+        <div class="nav-logo">W.Z.</div>
+        <ul class="nav-links">
+            <li><a href="#about" class="nav-text" data-en="About" data-cn="关于">About</a></li>
+            <li><a href="#projects" class="nav-text" data-en="Projects" data-cn="项目">Projects</a></li>
+            <li><a href="#experience" class="nav-text" data-en="Experience" data-cn="经历">Experience</a></li>
+            <li><a href="#blog" class="nav-text" data-en="Blog" data-cn="博客">Blog</a></li>
+            <li>
+                <div class="lang-toggle">
+                    <button class="lang-btn active" onclick="setLang('en')">EN</button>
+                    <button class="lang-btn" onclick="setLang('cn')">中</button>
+                </div>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+    <p class="hero-eyebrow" data-en="Quantitative Analytics · Financial Data Science · Risk Modeling" data-cn="量化分析 · 金融数据科学 · 风险建模"></p>
+    <h1 data-en="Wenchuan Zhu" data-cn="朱文川"></h1>
+    <p class="hero-desc" data-en="MMA candidate at the University of Alberta with a background in finance and a growing focus on data-driven solutions. I build quantitative models, automate financial processes, and turn complex data into actionable insights." data-cn="阿尔伯塔大学管理分析硕士在读，金融学背景，专注于数据驱动的解决方案。擅长构建量化模型、自动化金融流程，将复杂数据转化为可执行的洞察。"></p>
+    <div class="hero-links">
+        <a href="resume.pdf" class="hero-link primary" download>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+            <span data-en="Download Resume" data-cn="下载简历"></span>
+        </a>
+        <a href="https://linkedin.com/in/wenchuanzhu" class="hero-link secondary" target="_blank">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m9.07-9.07a4.5 4.5 0 00-6.364 0l-4.5 4.5a4.5 4.5 0 006.364 6.364l1.757-1.757"/></svg>
+            <span>LinkedIn</span>
+        </a>
+        <a href="mailto:qmcztop@outlook.com" class="hero-link secondary">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/></svg>
+            <span data-en="Email" data-cn="邮箱"></span>
+        </a>
+    </div>
+</header>
+
+<!-- ABOUT -->
+<section id="about" class="reveal">
+    <div class="section-header">
+        <p class="section-label" data-en="01 — About" data-cn="01 — 关于我">01 — About</p>
+        <h2 class="section-title" data-en="Background" data-cn="个人背景"></h2>
+        <div class="section-divider"></div>
+    </div>
+    <div class="about-grid">
+        <div class="about-text">
+            <p data-en="I hold dual bachelor's degrees in Finance and Investment Management from the University of Ulster (First Class Honours) and Dongbei University of Finance and Economics, and am currently pursuing a Master of Management Analytics at the University of Alberta." data-cn="本科毕业于阿尔斯特大学（一等荣誉学位）金融与投资管理专业，同时获得东北财经大学金融学学士学位。现就读于阿尔伯塔大学管理分析硕士项目。"></p>
+            <p data-en="My experience spans investment banking at PingAn Securities, where I automated financial reporting from 10,000+ row datasets and built analysis templates for $200M+ CAD transactions, to independent research applying causal inference and neural networks to financial prediction problems." data-cn="曾在平安证券投资银行部实习，负责万行级数据集的财务报表自动化及价值超2亿加元的交易分析模板搭建。独立研究方向涉及因果推断和神经网络在金融预测领域的应用。"></p>
+            <p data-en="I'm driven by the intersection of quantitative methods and financial domain knowledge — building tools that don't just process data, but uncover the logic behind it." data-cn="我的热情在于量化方法与金融领域知识的交叉——构建的工具不仅处理数据，更要揭示数据背后的逻辑。"></p>
+        </div>
+        <div class="about-stats">
+            <div class="stat-card">
+                <div class="stat-number">3</div>
+                <div class="stat-label" data-en="Math Competition Awards" data-cn="全国数学竞赛奖项"></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">$200M+</div>
+                <div class="stat-label" data-en="CAD Transactions Supported" data-cn="加元交易支持规模"></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">10K+</div>
+                <div class="stat-label" data-en="Rows Automated via VBA" data-cn="行数据 VBA 自动化处理"></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">80%</div>
+                <div class="stat-label" data-en="Process Time Reduced" data-cn="流程时间缩减"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects" class="reveal">
+    <div class="section-header">
+        <p class="section-label" data-en="02 — Projects" data-cn="02 — 项目">02 — Projects</p>
+        <h2 class="section-title" data-en="Selected Work" data-cn="精选项目"></h2>
+        <div class="section-divider"></div>
+    </div>
+    <div class="projects-grid">
+        <div class="project-card">
+            <p class="project-year">2025</p>
+            <h3 class="project-title" data-en="Bank Loan Approval Causal Analysis" data-cn="银行贷款审批因果分析"></h3>
+            <p class="project-desc" data-en="Identified a hidden subprime lending strategy by applying Inverse Probability Weighting to debias loan approval data. Shifted the approach from traditional prediction to causal inference, uncovering anomalies that standard models overlooked." data-cn="运用逆概率加权方法对贷款审批数据进行去偏处理，揭示了隐藏的次级贷款策略。将分析路径从传统预测转向因果推断，发现了常规模型忽视的统计异常。"></p>
+            <div class="project-tags">
+                <span class="tag">Python</span>
+                <span class="tag">Causal Inference</span>
+                <span class="tag">IPW</span>
+                <span class="tag">EDA</span>
+            </div>
+        </div>
+        <div class="project-card">
+            <p class="project-year">2025</p>
+            <h3 class="project-title" data-en="Multi-Modal Loan Prediction" data-cn="多模态贷款预测模型"></h3>
+            <p class="project-desc" data-en="Designed a dual-branch neural network fusing 1,024-dim text embeddings with tabular financial features to predict loan approval outcomes. Integrated NLP sentence embedding to transform unstructured application text into quantitative model inputs." data-cn="设计双分支神经网络，融合1024维文本嵌入与表格金融特征预测贷款审批结果。集成NLP句嵌入技术，将非结构化申请文本转化为量化模型输入。"></p>
+            <div class="project-tags">
+                <span class="tag">PyTorch</span>
+                <span class="tag">NLP</span>
+                <span class="tag">Neural Network</span>
+                <span class="tag">API Integration</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience" class="reveal">
+    <div class="section-header">
+        <p class="section-label" data-en="03 — Experience" data-cn="03 — 经历">03 — Experience</p>
+        <h2 class="section-title" data-en="Professional Journey" data-cn="职业历程"></h2>
+        <div class="section-divider"></div>
+    </div>
+    <div class="timeline">
+        <div class="timeline-item">
+            <p class="timeline-role" data-en="Master of Management Analytics" data-cn="管理分析硕士"></p>
+            <p class="timeline-company" data-en="University of Alberta" data-cn="阿尔伯塔大学"></p>
+            <p class="timeline-date">2025 — Present</p>
+        </div>
+        <div class="timeline-item">
+            <p class="timeline-role" data-en="Finance Intern — Investment Banking Division" data-cn="金融实习生 — 投资银行部"></p>
+            <p class="timeline-company" data-en="PingAn Securities" data-cn="平安证券"></p>
+            <p class="timeline-date">Mar 2025 — Jun 2025</p>
+            <p class="timeline-desc" data-en="Automated batch financial reporting with VBA from 10,000+ row datasets. Built standardized analysis templates for IPO and bond issuance projects totaling $200M CAD. Ensured regulatory compliance through automated document review." data-cn="使用VBA对万行级数据集进行批量财务报表自动化。为总计2亿加元的IPO及债券发行项目构建标准化分析模板。通过自动化文档审查确保合规。"></p>
+        </div>
+        <div class="timeline-item">
+            <p class="timeline-role" data-en="Financial Development Intern" data-cn="金融发展部实习生"></p>
+            <p class="timeline-company" data-en="Bank of Hangzhou" data-cn="杭州银行"></p>
+            <p class="timeline-date">Aug 2023</p>
+            <p class="timeline-desc" data-en="Independently designed an Excel-based loan assessment model with financial ratio analysis and credit scoring methodology." data-cn="独立设计基于Excel的贷款评估模型，融合财务比率分析与信用评分方法论。"></p>
+        </div>
+        <div class="timeline-item">
+            <p class="timeline-role" data-en="Rotational Intern" data-cn="轮岗实习生"></p>
+            <p class="timeline-company" data-en="Huaan Securities" data-cn="华安证券"></p>
+            <p class="timeline-date">Jul 2023 — Aug 2023</p>
+            <p class="timeline-desc" data-en="Performed client risk profiling using quantitative scoring frameworks. Conducted due diligence for two IPO projects." data-cn="运用量化评分框架进行客户风险画像。为两个IPO项目执行尽职调查。"></p>
+        </div>
+    </div>
+</section>
+
+<!-- BLOG -->
+<section id="blog" class="reveal">
+    <div class="section-header">
+        <p class="section-label" data-en="04 — Blog" data-cn="04 — 博客">04 — Blog</p>
+        <h2 class="section-title" data-en="Thoughts & Writing" data-cn="思考与写作"></h2>
+        <div class="section-divider"></div>
+    </div>
+    <div class="blog-placeholder">
+        <div class="blog-placeholder-icon">✎</div>
+        <p data-en="Articles coming soon. Stay tuned." data-cn="文章即将上线，敬请期待。"></p>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <div class="footer-inner">
+        <p class="footer-text">&copy; 2026 Wenchuan Zhu</p>
+        <div class="footer-links">
+            <a href="mailto:qmcztop@outlook.com">qmcztop@outlook.com</a>
+            <a href="https://linkedin.com/in/wenchuanzhu" target="_blank">LinkedIn</a>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // ===== LANGUAGE TOGGLE =====
+    let currentLang = 'en';
+
+    function setLang(lang) {
+        currentLang = lang;
+        document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelector(`.lang-btn[onclick="setLang('${lang}')"]`).classList.add('active');
+
+        document.querySelectorAll('[data-en]').forEach(el => {
+            const text = lang === 'en' ? el.getAttribute('data-en') : el.getAttribute('data-cn');
+            if (text) el.textContent = text;
+        });
+    }
+
+    // ===== SCROLL REVEAL =====
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // ===== SMOOTH SCROLL =====
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

@@ -538,7 +538,7 @@
 <header class="hero">
     <p class="hero-eyebrow" data-en="Quantitative Analytics · Financial Data Science · Risk Modeling" data-cn="量化分析 · 金融数据科学 · 风险建模"></p>
     <h1 data-en="Wenchuan Zhu" data-cn="朱文川"></h1>
-    <p class="hero-desc" data-en="MMA candidate at the University of Alberta with a background in finance and a growing focus on data-driven solutions. I build quantitative models, automate financial processes, and turn complex data into actionable insights." data-cn="阿尔伯塔大学管理分析硕士在读，金融学背景，专注于数据驱动的解决方案。擅长构建量化模型、自动化金融流程，将复杂数据转化为可执行的洞察。"></p>
+    <p class="hero-desc" data-en="MMA candidate at the University of Alberta with a background in finance and a growing focus on data-driven solutions.&lt;br&gt;I build quantitative models, automate financial processes, and turn complex data into actionable insights." data-cn="阿尔伯塔大学管理分析硕士在读，金融学背景，专注于数据驱动的解决方案。&lt;br&gt;擅长构建量化模型、自动化金融流程，将复杂数据转化为可执行的洞察。" data-html="true"></p>
     <div class="hero-links">
         <a href="resume.pdf" class="hero-link primary" download>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
@@ -691,7 +691,13 @@
 
         document.querySelectorAll('[data-en]').forEach(el => {
             const text = lang === 'en' ? el.getAttribute('data-en') : el.getAttribute('data-cn');
-            if (text) el.textContent = text;
+            if (text) {
+                if (el.hasAttribute('data-html')) {
+                    el.innerHTML = text;
+                } else {
+                    el.textContent = text;
+                }
+            }
         });
     }
 
@@ -707,6 +713,9 @@
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
     // ===== SMOOTH SCROLL =====
+    // Initialize language on load
+    setLang('en');
+
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
             e.preventDefault();

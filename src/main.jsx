@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom'
 import App from './App'
 import './styles.css'
 import './v3.css'
+import './special-projects.css'
 
 const redirect = new URLSearchParams(window.location.search).get('redirect')
 if (redirect) {

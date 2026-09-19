@@ -52,3 +52,6 @@ Planned next:
 5. SEO metadata and social cards
 6. GitHub Pages build workflow for Vite
 7. CMS + role-based editor/admin
+
+
+Deployment source: GitHub Actions.

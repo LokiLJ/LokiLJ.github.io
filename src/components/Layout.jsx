@@ -7,8 +7,8 @@ export default function Layout() {
         <NavLink className="brand" to="/" aria-label="Kevin Zhu home">W.K.Z.</NavLink>
         <nav aria-label="Primary navigation">
           <NavLink to="/work">Work</NavLink>
-          <NavLink to="/teaching">Teaching</NavLink>
           <NavLink to="/about">About</NavLink>
+          <NavLink to="/interests">Interests</NavLink>
           <a href="/resume.pdf">CV</a>
         </nav>
       </header>

@@ -1,14 +1,32 @@
 import { Link, useParams } from 'react-router-dom'
 import { allProjects } from '../data/projects'
 import CapstoneProject from './CapstoneProject'
+import RRSProject from './RRSProject'
+import QwenProject from './QwenProject'
+import NurseProject from './NurseProject'
 
 export default function Project() {
   const { projectId } = useParams()
-  if (projectId === 'production-scheduling') return <CapstoneProject />
+
+  const specialPages = {
+    'production-scheduling': CapstoneProject,
+    'logistics-network': RRSProject,
+    'qwen-finetuning': QwenProject,
+    'nurse-staffing': NurseProject,
+  }
+
+  const SpecialPage = specialPages[projectId]
+  if (SpecialPage) return <SpecialPage />
 
   const project = allProjects.find((item) => item.id === projectId)
   if (!project || project.depth !== 'deep') {
-    return <section className="page-hero"><p className="kicker">Project not found</p><h1>This case study is not published as a full page.</h1><Link className="button secondary" to="/work">Back to work</Link></section>
+    return (
+      <section className="page-hero">
+        <p className="kicker">Project not found</p>
+        <h1>This case study is not published as a full page.</h1>
+        <Link className="button secondary" to="/work">Back to work</Link>
+      </section>
+    )
   }
 
   return (
@@ -22,7 +40,12 @@ export default function Project() {
         <div className="tags project-tags">{project.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
       </section>
 
-      {project.metric && <section className="project-metric-band"><strong>{project.metric}</strong><p>{project.metricLabel}</p></section>}
+      {project.metric && (
+        <section className="project-metric-band">
+          <strong>{project.metric}</strong>
+          <p>{project.metricLabel}</p>
+        </section>
+      )}
 
       <section className="section case-detail case-detail-v3">
         <div className="case-detail-grid">
@@ -33,7 +56,10 @@ export default function Project() {
           <article><span className="case-label">05 / Result</span><p>{project.result}</p></article>
           <article><span className="case-label">06 / What it showed</span><p className="project-takeaway">{project.takeaway}</p></article>
         </div>
-        <div className="visual-placeholder refined-placeholder"><span>Project-specific visual comes next</span><p>The narrative and evidence structure is live. The next visual pass will add the project’s strongest chart, comparison, or system diagram rather than generic screenshots.</p></div>
+        <div className="visual-placeholder refined-placeholder">
+          <span>Project-specific visual comes next</span>
+          <p>The narrative and evidence structure is live. The next visual pass will add the project’s strongest chart, comparison, or system diagram rather than generic screenshots.</p>
+        </div>
         {project.note && <p className="publication-note">{project.note}</p>}
         {project.confidentiality && <p className="publication-note">{project.confidentiality}</p>}
         <div className="project-actions">

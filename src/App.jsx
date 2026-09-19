@@ -7,6 +7,7 @@ import About from './pages/About'
 import Interests from './pages/Interests'
 import InterestPage from './pages/InterestPage'
 import Admin from './pages/Admin'
+import AdminSetup from './pages/AdminSetup'
 import NotFound from './pages/NotFound'
 
 export default function App() {
@@ -21,6 +22,7 @@ export default function App() {
         <Route path="interests/:slug" element={<InterestPage />} />
         <Route path="teaching" element={<Navigate to="/interests/teaching" replace />} />
         <Route path="admin" element={<Admin />} />
+        <Route path="admin/setup" element={<AdminSetup />} />
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>

@@ -1,0 +1,47 @@
+export const miscProjects = [
+  {
+    id: 'gomoku', area: 'Software', year: '2026', depth: 'deep',
+    title: 'Real-Time Multiplayer Gomoku Server', eyebrow: 'Backend · WebSockets · Concurrency',
+    metric: 'Server-authoritative', metricLabel: 'shared game state, timers, validation, undo, spectators, and disconnect handling',
+    summary: 'A personal software project that grew from a board game into a real-time asynchronous state-management problem.',
+    role: 'Personal project · Designed and implemented end-to-end.', context: 'Deployed multiplayer service originally built for a friend.',
+    originalQuestion: 'How do you make a two-player online Gomoku game robust?', wrongAssumption: 'The board logic was only a small part of the system.',
+    reframing: 'The real engineering problem was maintaining one authoritative state across players, spectators, timers, disconnects, undo negotiation, and administrative actions.',
+    approach: 'FastAPI, WebSockets, asyncio tasks, server-side validation, player/spectator roles, timer broadcasting, graceful disconnects, a consent-based undo protocol, and authenticated administration.',
+    result: 'Deployed a working multiplayer service with live room configuration and in-session score tracking across games.',
+    takeaway: 'Reliable real-time software is mostly about state transitions, failure cases, and protocol discipline.',
+    tags: ['Python', 'FastAPI', 'WebSockets', 'asyncio'], githubUrl: 'https://github.com/LokiLJ/gomoku',
+  },
+  {
+    id: 'llm-credit-api', area: 'AI & Data Science', year: '2026', depth: 'compact',
+    title: 'LLM-Assisted Credit Decision Pipeline', eyebrow: 'Applied AI · API Engineering',
+    metric: '$9.05', metricLabel: 'reported API extraction cost for nearly 12K loan descriptions',
+    summary: 'Schema-constrained LLM API calls turned free-text loan descriptions into interpretable features, which were fused with tabular variables and audited with SHAP.',
+    tags: ['Claude API', 'JSON', 'Keras', 'SHAP'],
+  },
+  {
+    id: 'dqn-gridworld', area: 'AI & Data Science', year: '2026', depth: 'compact',
+    title: 'Reward Shaping in a Custom Grid-World DQN', eyebrow: 'Reinforcement Learning',
+    metric: 'Episode 145', metricLabel: 'optimal route discovered after reward shaping solved the exploration trap',
+    summary: 'Extended a simple grid world with toroidal movement, terrain costs, sprint actions, sparse rewards, and a reward-shaping experiment.',
+    tags: ['DQN', 'Reward Shaping', 'RL', 'Python'],
+  },
+  {
+    id: 'database-loan-analytics', area: 'Software', year: '2025', depth: 'compact',
+    title: 'Loan Analytics Database & BI System', eyebrow: 'Database · BI',
+    summary: 'Designed a normalized MySQL schema and analytical OLAP view for loan data, then connected the database layer to Tableau reporting.',
+    tags: ['MySQL', '3NF', 'OLAP', 'Tableau'],
+  },
+  {
+    id: 'macro-gender-gap', area: 'Finance & Risk', year: '2025', depth: 'compact',
+    title: 'Macroeconomic Gender-Gap Analysis', eyebrow: 'Econometrics · WDI',
+    summary: 'Used World Development Indicators, statistical inference, regression, diagnostics, and model selection to study gender unemployment gaps across economies.',
+    tags: ['R', 'Regression', 'Inference', 'WDI'],
+  },
+  {
+    id: 'sse-financial-analysis', area: 'Finance & Risk', year: '2023', depth: 'compact',
+    title: 'SSE PLC Financial Analysis', eyebrow: 'Earlier work · Corporate Finance',
+    summary: 'An earlier corporate-finance project covering industry analysis, financial ratios, peer comparison, and investment research.',
+    tags: ['Financial Analysis', 'Ratios', 'Investment Research'],
+  },
+]

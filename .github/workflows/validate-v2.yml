@@ -1,0 +1,23 @@
+name: Validate V2 portfolio
+
+on:
+  push:
+    branches: ["v2-redesign"]
+  pull_request:
+    branches: ["main"]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install dependencies
+        run: npm install
+      - name: Build Vite site
+        run: npm run build

@@ -65,6 +65,22 @@ alter table public.about_profile enable row level security;
 alter table public.interest_pages enable row level security;
 alter table public.content_blocks enable row level security;
 
+-- Keep grants explicit; RLS then decides which rows each role may touch.
+revoke all on table public.admins from anon, authenticated;
+grant select on table public.admins to authenticated;
+
+revoke all on table public.about_profile from anon, authenticated;
+grant select on table public.about_profile to anon, authenticated;
+grant insert, update, delete on table public.about_profile to authenticated;
+
+revoke all on table public.interest_pages from anon, authenticated;
+grant select on table public.interest_pages to anon, authenticated;
+grant insert, update, delete on table public.interest_pages to authenticated;
+
+revoke all on table public.content_blocks from anon, authenticated;
+grant select on table public.content_blocks to anon, authenticated;
+grant insert, update, delete on table public.content_blocks to authenticated;
+
 drop policy if exists "admin can read own membership" on public.admins;
 create policy "admin can read own membership"
 on public.admins for select

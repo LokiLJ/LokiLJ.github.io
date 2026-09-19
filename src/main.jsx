@@ -5,6 +5,7 @@ import App from './App'
 import './styles.css'
 import './v3.css'
 import './special-projects.css'
+import './special-projects-2.css'
 
 const redirect = new URLSearchParams(window.location.search).get('redirect')
 if (redirect) {

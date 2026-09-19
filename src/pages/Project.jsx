@@ -4,6 +4,8 @@ import CapstoneProject from './CapstoneProject'
 import RRSProject from './RRSProject'
 import QwenProject from './QwenProject'
 import NurseProject from './NurseProject'
+import CSDIProject from './CSDIProject'
+import LoanStrategyProject from './LoanStrategyProject'
 
 export default function Project() {
   const { projectId } = useParams()
@@ -13,6 +15,8 @@ export default function Project() {
     'logistics-network': RRSProject,
     'qwen-finetuning': QwenProject,
     'nurse-staffing': NurseProject,
+    'csdi-cgm': CSDIProject,
+    'loan-strategy': LoanStrategyProject,
   }
 
   const SpecialPage = specialPages[projectId]

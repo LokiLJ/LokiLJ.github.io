@@ -1,4 +1,4 @@
-import { featuredProjects, workAreas } from './data/projects'
+import { coreProjects, featuredProjects, workAreas } from './data/projects'
 
 function Navbar() {
   return (
@@ -6,6 +6,7 @@ function Navbar() {
       <a className="brand" href="#top" aria-label="Kevin Zhu home">W.K.Z.</a>
       <nav aria-label="Primary navigation">
         <a href="#work">Work</a>
+        <a href="#case-studies">Case Studies</a>
         <a href="#teaching">Teaching</a>
         <a href="#about">About</a>
         <a href="#contact">Contact</a>
@@ -34,10 +35,62 @@ function ProjectCard({ project }) {
       {project.confidentiality && (
         <p className="confidentiality">{project.confidentiality}</p>
       )}
-      <button className="text-link" type="button" disabled>
-        Case study coming in V2.1 →
-      </button>
+      <a className="text-link" href={"#case-" + project.id}>
+        Read the case-study structure →
+      </a>
     </article>
+  )
+}
+
+function CaseStudy({ project }) {
+  return (
+    <details className="case-study" id={"case-" + project.id}>
+      <summary>
+        <div>
+          <span className="case-area">{project.area} · {project.year}</span>
+          <h3>{project.title}</h3>
+        </div>
+        <span className="case-toggle" aria-hidden="true">+</span>
+      </summary>
+      <div className="case-body">
+        <p className="case-context">{project.context}</p>
+        <div className="case-grid">
+          <div>
+            <span className="case-label">Original question</span>
+            <p>{project.originalQuestion}</p>
+          </div>
+          <div>
+            <span className="case-label">Assumption that failed</span>
+            <p>{project.wrongAssumption}</p>
+          </div>
+          <div>
+            <span className="case-label">Reframing</span>
+            <p>{project.reframing}</p>
+          </div>
+          <div>
+            <span className="case-label">Approach</span>
+            <p>{project.approach}</p>
+          </div>
+          <div>
+            <span className="case-label">Result</span>
+            <p>{project.result}</p>
+          </div>
+          <div>
+            <span className="case-label">What it showed</span>
+            <p>{project.takeaway}</p>
+          </div>
+        </div>
+        <div className="tags">
+          {project.tags.map((tag) => <span key={tag}>{tag}</span>)}
+        </div>
+        {project.note && <p className="publication-note">{project.note}</p>}
+        {project.githubUrl && (
+          <a className="case-link" href={project.githubUrl} target="_blank" rel="noreferrer">
+            View public GitHub repository →
+          </a>
+        )}
+      </div>
+    </details>
   )
 }
 
@@ -63,7 +116,7 @@ function App() {
         <section id="work" className="section">
           <div className="section-heading">
             <p className="section-number">01 / Work</p>
-            <h2>Featured case studies</h2>
+            <h2>Featured evidence</h2>
             <p>
               The thread across these projects is not a specific algorithm. It is the
               habit of finding the decision underneath the original question.
@@ -87,6 +140,23 @@ function App() {
                 <h3>{area.title}</h3>
                 <p>{area.description}</p>
               </article>
+            ))}
+          </div>
+        </section>
+
+        <section id="case-studies" className="section">
+          <div className="section-heading">
+            <p className="section-number">Selected work</p>
+            <h2>Six projects worth opening</h2>
+            <p>
+              Each case study uses the same structure: what the original question was,
+              which assumption failed, how the problem was reframed, and what the evidence
+              ultimately changed.
+            </p>
+          </div>
+          <div className="case-list">
+            {coreProjects.map((project) => (
+              <CaseStudy key={project.id} project={project} />
             ))}
           </div>
         </section>
@@ -139,7 +209,7 @@ function App() {
       </main>
       <footer>
         <span>© 2026 Wenchuan (Kevin) Zhu</span>
-        <span>V2 redesign scaffold</span>
+        <span>wenchuanzhu.com</span>
       </footer>
     </>
   )

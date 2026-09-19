@@ -14,18 +14,62 @@ export default function AdminSetup() {
 
     let active = true
 
+    const clearAuthParams = () => {
+      window.history.replaceState({}, document.title, '/admin/setup')
+    }
+
     const resolve = async () => {
-      const { data, error } = await supabase.auth.getSession()
-      if (!active) return
-      if (error) {
-        setMessage(error.message)
-        return
-      }
-      if (data.session) {
-        setSession(data.session)
-        setMessage('')
-      } else {
-        setMessage('No active invitation or password-recovery session was found. Request a new email and open its link in this browser.')
+      try {
+        const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ''))
+        const searchParams = new URLSearchParams(window.location.search)
+
+        const errorDescription = hashParams.get('error_description') || searchParams.get('error_description')
+        if (errorDescription) {
+          if (active) setMessage(decodeURIComponent(errorDescription))
+          return
+        }
+
+        const accessToken = hashParams.get('access_token')
+        const refreshToken = hashParams.get('refresh_token')
+
+        if (accessToken && refreshToken) {
+          const { data, error } = await supabase.auth.setSession({
+            access_token: accessToken,
+            refresh_token: refreshToken,
+          })
+          if (error) throw error
+          if (active) {
+            setSession(data.session)
+            setMessage('')
+            clearAuthParams()
+          }
+          return
+        }
+
+        const code = searchParams.get('code')
+        if (code) {
+          const { data, error } = await supabase.auth.exchangeCodeForSession(code)
+          if (error) throw error
+          if (active) {
+            setSession(data.session)
+            setMessage('')
+            clearAuthParams()
+          }
+          return
+        }
+
+        const { data, error } = await supabase.auth.getSession()
+        if (error) throw error
+
+        if (!active) return
+        if (data.session) {
+          setSession(data.session)
+          setMessage('')
+        } else {
+          setMessage('No active invitation or password-recovery session was found. Request a new email and open its link in this browser.')
+        }
+      } catch (error) {
+        if (active) setMessage(error?.message || 'Could not establish the invitation session.')
       }
     }
 
@@ -33,7 +77,7 @@ export default function AdminSetup() {
 
     const { data: listener } = supabase.auth.onAuthStateChange((event, nextSession) => {
       if (!active) return
-      if (event === 'SIGNED_IN' || event === 'PASSWORD_RECOVERY') {
+      if (['INITIAL_SESSION', 'SIGNED_IN', 'PASSWORD_RECOVERY', 'TOKEN_REFRESHED'].includes(event) && nextSession) {
         setSession(nextSession)
         setMessage('')
       }

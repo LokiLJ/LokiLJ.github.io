@@ -189,6 +189,93 @@ function BlockEditor({ page }) {
   )
 }
 
+function ProjectAssetsEditor() {
+  const [assets, setAssets] = useState({})
+  const [message, setMessage] = useState('')
+
+  const refresh = async () => {
+    const { data, error } = await supabase
+      .from('project_assets')
+      .select('*')
+      .eq('project_id', 'production-scheduling')
+    if (error) return setMessage(error.message)
+    setAssets(Object.fromEntries((data || []).map((item) => [item.asset_key, item])))
+  }
+
+  useEffect(() => { refresh() }, [])
+
+  const uploadAsset = async (assetKey, file) => {
+    if (!file) return
+    setMessage('Uploading ' + file.name + '…')
+    try {
+      const path = await uploadMedia(file, 'projects/production-scheduling')
+      const previous = assets[assetKey]
+      const { error } = await supabase
+        .from('project_assets')
+        .upsert({
+          project_id: 'production-scheduling',
+          asset_key: assetKey,
+          media_path: path,
+          caption: assetKey === 'dashboard_demo'
+            ? 'Synthetic dashboard demonstration'
+            : 'Synthetic scheduling workbook',
+          published: true,
+          updated_at: new Date().toISOString(),
+        }, { onConflict: 'project_id,asset_key' })
+      if (error) throw error
+      if (previous?.media_path && previous.media_path !== path) {
+        await supabase.storage.from('portfolio-media').remove([previous.media_path])
+      }
+      setMessage('Uploaded and published.')
+      refresh()
+    } catch (error) {
+      setMessage(error.message)
+    }
+  }
+
+  const removeAsset = async (assetKey) => {
+    const item = assets[assetKey]
+    if (!item || !window.confirm('Remove this published asset?')) return
+    if (item.media_path) await supabase.storage.from('portfolio-media').remove([item.media_path])
+    await supabase.from('project_assets').delete().eq('id', item.id)
+    setMessage('Removed.')
+    refresh()
+  }
+
+  const AssetRow = ({ assetKey, title, accept, help }) => {
+    const item = assets[assetKey]
+    return (
+      <article className="project-asset-row">
+        <div>
+          <p className="eyebrow">Capstone asset</p>
+          <h3>{title}</h3>
+          <p>{help}</p>
+          {item && <span className="asset-live">Published · {item.media_path}</span>}
+        </div>
+        <div className="project-asset-actions">
+          <label className="button secondary">
+            {item ? 'Replace' : 'Upload'}
+            <input type="file" accept={accept} onChange={(e) => uploadAsset(assetKey, e.target.files?.[0])} hidden />
+          </label>
+          {item && <button className="danger-link" onClick={() => removeAsset(assetKey)}>Remove</button>}
+        </div>
+      </article>
+    )
+  }
+
+  return (
+    <div className="admin-editor-card">
+      <div className="admin-editor-head">
+        <div><p className="eyebrow">Curated work</p><h2>Capstone project assets</h2></div>
+      </div>
+      <p className="admin-help">These files appear inside the hand-designed Production Scheduling case study. They are separate from Interests so the story layout stays curated.</p>
+      <AssetRow assetKey="dashboard_demo" title="Redacted dashboard video" accept="video/*" help="Upload the synthetic-data dashboard recording with the location-specific label redacted." />
+      <AssetRow assetKey="scheduler_excel" title="Synthetic scheduler workbook" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" help="Upload the public synthetic Excel deliverable." />
+      {message && <p className="admin-message">{message}</p>}
+    </div>
+  )
+}
+
 function InterestsEditor() {
   const [pages, setPages] = useState([])
   const [selectedId, setSelectedId] = useState(null)
@@ -318,8 +405,9 @@ export default function Admin() {
       <div className="admin-tabs">
         <button className={tab === 'about' ? 'active' : ''} onClick={() => setTab('about')}>About</button>
         <button className={tab === 'interests' ? 'active' : ''} onClick={() => setTab('interests')}>Interests</button>
+        <button className={tab === 'projects' ? 'active' : ''} onClick={() => setTab('projects')}>Project assets</button>
       </div>
-      {tab === 'about' ? <AboutEditor /> : <InterestsEditor />}
+      {tab === 'about' ? <AboutEditor /> : tab === 'interests' ? <InterestsEditor /> : <ProjectAssetsEditor />}
     </section>
   )
 }

@@ -179,3 +179,36 @@ create policy "admins delete media"
 on storage.objects for delete
 to authenticated
 using (bucket_id = 'portfolio-media' and public.is_admin());
+
+
+-- Curated project assets used by hand-designed case-study pages.
+create table if not exists public.project_assets (
+  id uuid primary key default gen_random_uuid(),
+  project_id text not null,
+  asset_key text not null,
+  media_path text not null,
+  caption text,
+  published boolean not null default true,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  unique (project_id, asset_key)
+);
+
+alter table public.project_assets enable row level security;
+
+revoke all on table public.project_assets from anon, authenticated;
+grant select on table public.project_assets to anon, authenticated;
+grant insert, update, delete on table public.project_assets to authenticated;
+
+drop policy if exists "public can read published project assets" on public.project_assets;
+create policy "public can read published project assets"
+on public.project_assets for select
+to anon, authenticated
+using (published = true or public.is_admin());
+
+drop policy if exists "admins manage project assets" on public.project_assets;
+create policy "admins manage project assets"
+on public.project_assets for all
+to authenticated
+using (public.is_admin())
+with check (public.is_admin());

@@ -1,98 +1,163 @@
 import { Link } from 'react-router-dom'
 
 const modelRows = [
-  { model: 'M1', name: 'Mean-demand baseline', regret: 12.74, sd: 6.22, note: 'Simple, but ignores uncertainty.' },
-  { model: 'M2', name: 'Stochastic SAA', regret: 10.94, sd: 2.93, note: 'Captures uncertainty with equal scenario weights.' },
-  { model: 'M3', name: 'Context-weighted PP', regret: 8.51, sd: 5.33, note: 'Best average regret; higher volatility.' },
-  { model: 'M4', name: 'Risk-aware VaR', regret: 8.88, sd: 4.01, note: 'Small mean premium for better tail control.' },
+  { model: 'M1', label: 'Mean demand', regret: 12.74, sd: 6.22 },
+  { model: 'M2', label: 'Stochastic SAA', regret: 10.94, sd: 2.93 },
+  { model: 'M3', label: 'Context weighted', regret: 8.51, sd: 5.33 },
+  { model: 'M4', label: 'Risk aware', regret: 8.88, sd: 4.01 },
 ]
 
-const debugCards = [
-  ['Zero regret', 'The economics were wrong: free or mispriced recourse made capacity constraints meaningless.'],
-  ['Zero capacity on remote spokes', 'The penalty baseline used average distance, making shortage cheaper than serving distant destinations.'],
-  ['Independent spokes', 'Without a shared first-stage capacity budget, the network collapsed into separate newsvendor problems.'],
-  ['Inactive VaR guardrail', 'In cost minimization, the auxiliary threshold had to be explicitly disciplined or the risk constraint could become vacuous.'],
-]
+function TrafficFigure() {
+  return (
+    <figure className="rrs-figure traffic-figure">
+      <figcaption><span>Figure 01</span><strong>A small share of arcs carried most of the traffic.</strong></figcaption>
+      <div className="traffic-bars">
+        <div className="traffic-bar"><span>Top arcs</span><div><i style={{width:'7%'}}></i></div><b>7% of arcs</b></div>
+        <div className="traffic-bar"><span>Traffic</span><div><i style={{width:'80%'}}></i></div><b>80% of flow</b></div>
+      </div>
+      <p>The network was highly concentrated, so getting node roles and relay structure wrong would distort nearly every downstream capacity decision.</p>
+    </figure>
+  )
+}
+
+function RouteFigure() {
+  return (
+    <figure className="rrs-figure route-figure">
+      <figcaption><span>Figure 02</span><strong>The order table and the physical movement log told different stories.</strong></figcaption>
+      <div className="route-story">
+        <div>
+          <small>Order record</small>
+          <div className="route-line"><b>081</b><i>→</i><b>089</b></div>
+          <p>It looks like one direct lane.</p>
+        </div>
+        <strong className="route-not-equal">≠</strong>
+        <div className="route-actual">
+          <small>Movement log</small>
+          <div className="route-line"><b>081</b><i>→</i><b>082</b><i>→</i><b>089</b></div>
+          <p>The freight actually moved through a relay.</p>
+        </div>
+      </div>
+    </figure>
+  )
+}
+
+function RegretFigure() {
+  const max = 13
+  return (
+    <figure className="rrs-figure regret-figure">
+      <figcaption><span>Figure 03</span><strong>Decision quality improved as uncertainty and context entered the model.</strong></figcaption>
+      <div className="regret-chart">
+        {modelRows.map((row) => (
+          <div className="regret-chart-row" key={row.model}>
+            <div className="regret-name"><b>{row.model}</b><span>{row.label}</span></div>
+            <div className="regret-track"><i style={{width:(row.regret/max*100)+'%'}}></i></div>
+            <strong>{row.regret.toFixed(2)}M</strong>
+          </div>
+        ))}
+      </div>
+      <p>Lower is better. M3 produced the lowest average regret among practical models, but its larger standard deviation made the next question unavoidable: how much mean performance should be traded for tail stability?</p>
+    </figure>
+  )
+}
+
+function RiskFigure() {
+  return (
+    <figure className="rrs-figure risk-figure">
+      <figcaption><span>Figure 04</span><strong>The best average model was not the calmest one.</strong></figcaption>
+      <div className="risk-points">
+        {modelRows.slice(1).map((row) => (
+          <div className="risk-point-row" key={row.model}>
+            <span>{row.model}</span>
+            <div className="risk-axis"><i style={{left:(row.sd/6.5*100)+'%'}}></i></div>
+            <b>{row.sd.toFixed(2)}M SD</b>
+          </div>
+        ))}
+      </div>
+      <p>Context improved the mean result, while the risk-aware model accepted a small average-regret premium for lower volatility.</p>
+    </figure>
+  )
+}
 
 export default function RRSProject() {
   return (
     <>
-      <section className="project-special-hero rrs-hero">
-        <div className="special-hero-nav"><Link className="back-link" to="/work">← Selected work</Link><span>Decision Systems · 2026</span></div>
-        <p className="kicker">Predictive–Prescriptive Logistics</p>
-        <h1>Before optimizing the network, I had to determine what the network actually was.</h1>
-        <p className="special-deck">A large-scale logistics project that moved from raw operational records to a two-stage stochastic capacity model with contextual demand weighting and tail-risk control.</p>
-        <div className="project-role">Model-design lead · Developed the modelling theory and directed implementation.</div>
-      </section>
+      <article className="rrs-editorial">
+        <header className="rrs-editorial-hero">
+          <div className="special-hero-nav"><Link className="back-link" to="/work">← Selected work</Link><span>Decision Systems · 2026</span></div>
+          <p className="kicker">Predictive–Prescriptive Logistics</p>
+          <h1>The first optimization problem was not capacity. It was figuring out what the network actually was.</h1>
+          <p className="rrs-standfirst">We started with 14.7 million operational order records and a seemingly straightforward question: how much outbound capacity should be reserved before demand is known? The data made that question look easier than it was.</p>
+          <div className="rrs-byline">Model-design lead · Developed the modelling theory and directed implementation.</div>
+        </header>
 
-      <section className="evidence-strip">
-        <article><strong>14.7M</strong><span>filtered order records investigated</span></article>
-        <article><strong>54.4%</strong><span>local orders removed before network analysis</span></article>
-        <article><strong>6.7M</strong><span>cross-hub orders remaining</span></article>
-        <article><strong>80% / 7%</strong><span>traffic concentration across a small share of arcs</span></article>
-      </section>
+        <section className="rrs-story-section">
+          <div className="rrs-prose">
+            <p className="rrs-dropcap">The first surprise arrived before any stochastic model was built. More than half of the order records were local movements and had to be removed before the cross-hub network could even be studied. What remained was still highly concentrated: a small share of arcs carried most of the traffic.</p>
+            <p>That concentration made network reconstruction consequential. A mistaken hub role or a false direct connection would not be a cosmetic data-cleaning issue; it would change where the optimization model believed capacity was needed.</p>
+          </div>
+          <TrafficFigure />
+        </section>
 
-      <section className="section narrative-grid-section">
-        <div className="section-heading wide-heading">
-          <div><p className="section-number">01 / Reconstruct reality</p><h2>Transactional flow was not physical flow.</h2></div>
-          <p>Origin–destination assignments described fulfilment decisions, while movement logs described what the freight actually did. That distinction changed the admissible network before any optimization model was allowed to run.</p>
-        </div>
-        <div className="network-contrast">
-          <article><span>Orders table</span><h3>Assigned origin → destination</h3><div className="route-demo direct"><b>081</b><i>→</i><b>089</b></div><p>Looks like a direct lane.</p></article>
-          <div className="contrast-arrow">≠</div>
-          <article className="actual-route"><span>Movement log</span><h3>Observed physical route</h3><div className="route-demo relay"><b>081</b><i>→</i><b>082</b><i>→</i><b>089</b></div><p>Physical movement reveals the relay structure.</p></article>
-        </div>
-        <div className="data-lesson-grid">
-          <article><span>Identity lesson</span><h3>Patterns do not prove node roles.</h3><p>Initial hub-role inference from flow ratios was later corrected using external structural evidence.</p></article>
-          <article><span>Event-code lesson</span><h3>Operational records can imitate reverse logistics.</h3><p>An alarming return pattern was traced to non-physical system events rather than genuine freight movement.</p></article>
-          <article><span>Policy lesson</span><h3>ρ was not simply “a number to estimate.”</h3><p>The shortage penalty encoded management’s service posture, so it became a sensitivity and policy parameter.</p></article>
-        </div>
-      </section>
+        <section className="rrs-story-section alternate">
+          <div className="rrs-prose">
+            <p>Then came a more important contradiction. The order table described where an order was assigned. The movement log described where freight physically travelled. Those are not the same thing.</p>
+            <p>An order could appear to move directly from node 081 to node 089, while timestamped movement records showed an intermediate relay through node 082. The transactional network was therefore a fulfilment network, not necessarily a physical one.</p>
+          </div>
+          <RouteFigure />
+          <div className="rrs-turn"><span>First turn</span><strong>Before optimizing the network, we had to reconstruct the network.</strong></div>
+        </section>
 
-      <section className="section rrs-debug-section">
-        <div className="section-heading wide-heading">
-          <div><p className="section-number">02 / Model debugging</p><h2>“Regret = 0” was a bug report, not a victory.</h2></div>
-          <p>The hardest part was not getting the solver to return an answer. It was recognizing when a mathematically feasible answer violated the economics of the system.</p>
-        </div>
-        <div className="debug-grid">{debugCards.map(([title,text],i)=><article key={title}><span>0{i+1}</span><h3>{title}</h3><p>{text}</p></article>)}</div>
-      </section>
+        <section className="rrs-story-section">
+          <div className="rrs-prose">
+            <p>The data kept producing results that looked interesting and were actually warnings. Apparent reverse flows turned out to include system events that did not correspond to physical freight movement. Early hub-role classifications based on flow patterns also had to be corrected once structural evidence was considered.</p>
+            <p>That changed how we treated the dataset. We stopped assuming every operational code was a physical event and stopped treating every visually obvious pattern as a valid network rule.</p>
+          </div>
+          <aside className="rrs-margin-note">
+            <span>Data lesson</span>
+            <p>Operational data often records the logic of a system, not a literal map of reality. The semantic layer had to be reconstructed before the mathematical layer could be trusted.</p>
+          </aside>
+        </section>
 
-      <section className="section model-ladder-section">
-        <div className="section-heading wide-heading">
-          <div><p className="section-number">03 / Build the decision ladder</p><h2>Separate the value of uncertainty, context, and risk control.</h2></div>
-          <p>The final benchmark used a progression from deterministic planning to stochastic planning, then contextual scenario weighting, then a VaR-style safeguard. Each step answered a different question.</p>
-        </div>
-        <div className="model-ladder">
-          <article><span>M0</span><strong>Perfect foresight</strong><p>Lower bound only.</p></article>
-          <i>→</i><article><span>M1</span><strong>Mean demand</strong><p>Deterministic baseline.</p></article>
-          <i>→</i><article><span>M2</span><strong>SAA</strong><p>Value of uncertainty.</p></article>
-          <i>→</i><article className="model-best"><span>M3</span><strong>kNN context</strong><p>Value of context.</p></article>
-          <i>→</i><article><span>M4</span><strong>VaR guardrail</strong><p>Value of robustness.</p></article>
-        </div>
-      </section>
+        <section className="rrs-story-section rrs-zero-section">
+          <div className="rrs-prose">
+            <p>When the first optimization runs eventually returned <strong>zero regret</strong>, the result was tempting. A perfect decision model would be an excellent outcome.</p>
+            <p>But zero regret was too good to be credible. It became the clearest debugging signal in the project.</p>
+          </div>
+          <div className="zero-regret-visual">
+            <strong>0</strong><span>regret</span>
+            <p>Not a victory. A model specification problem.</p>
+          </div>
+          <div className="rrs-debug-story">
+            <p>The economics were allowing capacity constraints to disappear. Recourse could become too cheap; remote spokes could be cheaper to leave short than to serve; independent capacity budgets could turn one network problem into a collection of unrelated newsvendor problems.</p>
+            <p>The fix was not another algorithm. It was to rebuild the economic logic: shared first-stage capacity, meaningful shortage penalties, and a risk formulation that could not become vacuous.</p>
+          </div>
+          <div className="rrs-turn"><span>Second turn</span><strong>A solver can be perfectly happy with a model that makes no operational sense.</strong></div>
+        </section>
 
-      <section className="section rrs-results-section">
-        <div className="section-heading wide-heading">
-          <div><p className="section-number">04 / Results</p><h2>Context improved the mean. Risk control improved the tail.</h2></div>
-          <p>Average regret fell as the model incorporated uncertainty and operating context. M3 achieved the lowest mean regret among practical models, while M4 accepted a small mean-regret premium in exchange for lower volatility.</p>
-        </div>
-        <div className="rrs-table">
-          <div className="rrs-table-head"><span>Model</span><span>Avg regret</span><span>Std regret</span><span>Interpretation</span></div>
-          {modelRows.map((row)=><div className={'rrs-table-row '+(row.model==='M3'?'is-best':'')} key={row.model}>
-            <span><b>{row.model}</b><small>{row.name}</small></span>
-            <span>{row.regret.toFixed(2)}M<div className="regret-bar"><i style={{width: (row.regret/13*100)+'%'}}></i></div></span>
-            <span>{row.sd.toFixed(2)}M</span>
-            <span>{row.note}</span>
-          </div>)}
-        </div>
-        <blockquote className="capstone-quote rrs-quote"><span>Decision insight</span><p>Context was valuable—but concentrating too heavily on local scenarios also increased volatility. Better prediction did not automatically mean safer decisions.</p></blockquote>
-      </section>
+        <section className="rrs-story-section alternate">
+          <div className="rrs-prose">
+            <p>Only after the network and economics were coherent did model comparison become useful. We deliberately built a ladder rather than jumping to the most complex formulation.</p>
+            <p>Mean-demand planning provided a deterministic baseline. Sample-average approximation added uncertainty. Context weighting asked whether similar operating conditions improved the decision. A risk-aware extension then asked whether some average performance should be sacrificed to reduce volatility.</p>
+          </div>
+          <RegretFigure />
+        </section>
 
-      <section className="section closing-insight">
-        <p className="section-number">Key takeaway</p>
-        <h2>A mathematically solvable model is not enough. The network, the data semantics, and the economics all have to describe the same reality.</h2>
-        <div className="project-actions"><Link className="button secondary" to="/work">Back to all work</Link></div>
-      </section>
+        <section className="rrs-story-section">
+          <div className="rrs-prose">
+            <p>The contextual model produced the lowest average regret. That sounds like the end of the story, but it created another trade-off: its outcomes were more volatile.</p>
+            <p>The risk-aware version gave up a small amount of average performance and reduced that volatility. In other words, better context improved the typical decision, but concentrating too heavily on local scenarios could also make the plan more brittle.</p>
+          </div>
+          <RiskFigure />
+          <div className="rrs-turn"><span>Final turn</span><strong>Better prediction did not automatically mean safer decisions.</strong></div>
+        </section>
+
+        <section className="rrs-editorial-ending">
+          <p className="eyebrow">What I took from the project</p>
+          <h2>A mathematically solvable model is not enough. The data semantics, network structure, and economics all have to describe the same reality.</h2>
+          <p>The eventual stochastic program mattered, but the more transferable lesson was diagnostic: suspiciously elegant results deserve investigation, and optimization is only as useful as the world it has been told to represent.</p>
+          <Link className="button secondary" to="/work">Back to all work</Link>
+        </section>
+      </article>
     </>
   )
 }

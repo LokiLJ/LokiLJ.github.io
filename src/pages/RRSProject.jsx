@@ -86,13 +86,29 @@ export default function RRSProject() {
           <div className="special-hero-nav"><Link className="back-link" to="/work">← Selected work</Link><span>Decision Systems · 2026</span></div>
           <p className="kicker">Predictive–Prescriptive Logistics</p>
           <h1>The first optimization problem was not capacity. It was figuring out what the network actually was.</h1>
-          <p className="rrs-standfirst">We started with 14.7 million operational order records and a seemingly straightforward question: how much outbound capacity should be reserved before demand is known? The data made that question look easier than it was.</p>
+          <p className="rrs-standfirst">A logistics planning project about a simple operational question: before tomorrow's demand is known, how much outbound capacity should the network reserve today?</p>
           <div className="rrs-byline">Model-design lead · Developed the modelling theory and directed implementation.</div>
         </header>
 
+        <section className="rrs-brief">
+          <div>
+            <p className="eyebrow">The setting</p>
+            <p>RRS operates a distribution network serving manufacturers, retailers, logistics platforms, and ultimately end customers. Headquarters decides how freight should move between distribution centers while balancing cost and service requirements.</p>
+          </div>
+          <div>
+            <p className="eyebrow">What we received</p>
+            <p>Historical orders, timestamped delivery-movement records, appointment information, and SKU-level product attributes. Together, the data described order demand, product weight and volume, and how freight appeared to move through the network.</p>
+          </div>
+          <div>
+            <p className="eyebrow">The decision</p>
+            <p>Our planning focus was the subnetwork centered on Hub 081. Capacity had to be reserved before demand was known; after demand appeared, the system could use direct service, transshipment, emergency transport, or controlled stockouts. This made the project a two-stage decision problem, not just a forecasting exercise.</p>
+          </div>
+          <p className="rrs-bridge">The filtered order table alone contained roughly 14.7 million records. That sounded like enough information to start optimizing. Instead, the first question became more basic: <strong>what did these records actually say the network was?</strong></p>
+        </section>
+
         <section className="rrs-story-section">
           <div className="rrs-prose">
-            <p className="rrs-dropcap">The first surprise arrived before any stochastic model was built. More than half of the order records were local movements and had to be removed before the cross-hub network could even be studied. What remained was still highly concentrated: a small share of arcs carried most of the traffic.</p>
+            <p className="rrs-dropcap">Before any stochastic model was built, more than half of the order records had to be removed because origin and destination were the same. The remaining cross-hub traffic was highly concentrated: a small share of arcs carried most of the flow.</p>
             <p>That concentration made network reconstruction consequential. A mistaken hub role or a false direct connection would not be a cosmetic data-cleaning issue; it would change where the optimization model believed capacity was needed.</p>
           </div>
           <TrafficFigure />

@@ -171,7 +171,12 @@ export default function CapstoneProject() {
       </section>
 
       <section className="section cap-act cap-act-light">
-        <div className="story-beat"><span>01 / Make the problem concrete</span><h2>Imagine a pump manufacturer with two components that refuse to finish together.</h2></div>
+        <div className="story-context">
+          <p className="eyebrow">Project context</p>
+          <p>For our industry capstone, we worked with an Edmonton-based manufacturer of progressing cavity pumps. The company was preparing to increase production, but substantial work-in-process was already tying up working capital. Our brief was to make that WIP visible and improve production scheduling before higher throughput made the accumulation worse.</p>
+          <p>Every pump depends on two matching components. The stator is produced in-house and can be completed quickly; the rotor leaves the plant for chrome plating and typically takes two to three weeks to return. Stator scheduling was handled manually by an experienced production manager, so coordination depended heavily on judgement and incomplete visibility into rotor timing.</p>
+        </div>
+        <div className="story-beat"><span>01 / Make the problem concrete</span><h2>One pump. Two production clocks.</h2><p>The WIP problem begins when those clocks stop lining up.</p></div>
         <PumpVisual />
         <MismatchTimeline />
         <div className="story-punchline"><span>What accumulates?</span><strong>Finished stators waiting for their matching rotors.</strong><p>Every completed stator waiting on the floor represents working capital that cannot yet become a finished pump.</p></div>

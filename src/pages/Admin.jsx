@@ -204,16 +204,16 @@ function ProjectAssetsEditor() {
 
   useEffect(() => { refresh() }, [])
 
-  const uploadAsset = async (assetKey, file) => {
+  const uploadAsset = async (assetKey, file, projectId = 'production-scheduling') => {
     if (!file) return
     setMessage('Uploading ' + file.name + '…')
     try {
-      const path = await uploadMedia(file, 'projects/production-scheduling')
+      const path = await uploadMedia(file, 'projects/' + projectId)
       const previous = assets[assetKey]
       const { error } = await supabase
         .from('project_assets')
         .upsert({
-          project_id: 'production-scheduling',
+          project_id: projectId,
           asset_key: assetKey,
           media_path: path,
           caption: assetKey === 'dashboard_demo'
@@ -242,7 +242,7 @@ function ProjectAssetsEditor() {
     refresh()
   }
 
-  const AssetRow = ({ assetKey, title, accept, help }) => {
+  const AssetRow = ({ assetKey, title, accept, help, projectId = 'production-scheduling' }) => {
     const item = assets[assetKey]
     return (
       <article className="project-asset-row">
@@ -255,7 +255,7 @@ function ProjectAssetsEditor() {
         <div className="project-asset-actions">
           <label className="button secondary">
             {item ? 'Replace' : 'Upload'}
-            <input type="file" accept={accept} onChange={(e) => uploadAsset(assetKey, e.target.files?.[0])} hidden />
+            <input type="file" accept={accept} onChange={(e) => uploadAsset(assetKey, e.target.files?.[0], projectId)} hidden />
           </label>
           {item && <button className="danger-link" onClick={() => removeAsset(assetKey)}>Remove</button>}
         </div>
@@ -271,6 +271,13 @@ function ProjectAssetsEditor() {
       <p className="admin-help">These files appear inside the hand-designed Production Scheduling case study. They are separate from Interests so the story layout stays curated.</p>
       <AssetRow assetKey="dashboard_demo" title="Redacted dashboard video" accept="video/*" help="Upload the synthetic-data dashboard recording with the location-specific label redacted." />
       <AssetRow assetKey="scheduler_excel" title="Synthetic scheduler workbook" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" help="Upload the public synthetic Excel deliverable." />
+      <hr className="admin-separator" />
+      <p className="eyebrow">Logistics report visuals</p>
+      <p className="admin-help">Upload original analysis outputs from the RRS report. The case-study page will display them with method notes.</p>
+      <AssetRow assetKey="network_outbound" title="Hub 081 outbound OD flow chart" accept="image/*" help="Original report chart for outbound destination flows from Hub 081." projectId="logistics-network" />
+      <AssetRow assetKey="path_reconstruction" title="Direct vs relay path reconstruction" accept="image/*" help="Original stacked bar chart reconstructed from delivery_details." projectId="logistics-network" />
+      <AssetRow assetKey="context_weighting" title="Weighted demand distribution" accept="image/*" help="Original Uniform vs kNN demand distribution figure." projectId="logistics-network" />
+      <AssetRow assetKey="arc_capacity" title="Activated arc capacity comparison" accept="image/*" help="Original report chart comparing model capacity decisions." projectId="logistics-network" />
       {message && <p className="admin-message">{message}</p>}
     </div>
   )

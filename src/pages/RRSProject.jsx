@@ -10,7 +10,7 @@ const modelRows = [
 function TrafficFigure() {
   return (
     <figure className="rrs-figure traffic-figure">
-      <figcaption><span>Figure 01</span><strong>A small share of arcs carried most of the traffic.</strong></figcaption>
+      <figcaption><span>Report result · redrawn</span><strong>A small share of arcs carried most of the traffic.</strong></figcaption>
       <div className="traffic-bars">
         <div className="traffic-bar"><span>Top arcs</span><div><i style={{width:'7%'}}></i></div><b>7% of arcs</b></div>
         <div className="traffic-bar"><span>Traffic</span><div><i style={{width:'80%'}}></i></div><b>80% of flow</b></div>
@@ -23,7 +23,7 @@ function TrafficFigure() {
 function RouteFigure() {
   return (
     <figure className="rrs-figure route-figure">
-      <figcaption><span>Figure 02</span><strong>The order table and the physical movement log told different stories.</strong></figcaption>
+      <figcaption><span>Report result · redrawn</span><strong>The order table and the physical movement log told different stories.</strong></figcaption>
       <div className="route-story">
         <div>
           <small>Order record</small>
@@ -41,11 +41,46 @@ function RouteFigure() {
   )
 }
 
+function PathMixFigure() {
+  return (
+    <figure className="rrs-figure path-mix-figure">
+      <figcaption><span>Report figure · redrawn</span><strong>Reconstructed paths showed a mostly direct network—with meaningful relay traffic.</strong></figcaption>
+      <div className="path-mix-meta"><strong>~1.9M</strong><span>order paths reconstructed from timestamped movement records</span></div>
+      <div className="path-mix-bar" aria-label="About 90 percent direct and 10 percent transshipment among inter-center shipments">
+        <i className="path-direct" style={{width:'90%'}}><span>~90% direct</span></i>
+        <i className="path-relay" style={{width:'10%'}}><span>~10%</span></i>
+      </div>
+      <p>That was enough transshipment to matter operationally, but not enough to justify treating every theoretical lane as feasible.</p>
+    </figure>
+  )
+}
+
+function ContextWeightFigure() {
+  return (
+    <figure className="rrs-figure context-weight-figure">
+      <figcaption><span>Report figure · redrawn</span><strong>Context weighting changed which historical demand scenarios mattered.</strong></figcaption>
+      <div className="context-weight-grid">
+        <div>
+          <small>M2 · SAA</small>
+          <strong>Every historical day counts equally</strong>
+          <div className="scenario-dots uniform">{Array.from({length:10}).map((_,i)=><i key={i}></i>)}</div>
+        </div>
+        <div>
+          <small>M3 · kNN context</small>
+          <strong>Similar operating days receive more weight</strong>
+          <div className="scenario-dots weighted">{[1,1,2,4,5,4,2,1,1,1].map((w,i)=><i key={i} style={{transform:`scale(${0.65+w*0.12})`,opacity:0.35+w*0.11}}></i>)}</div>
+        </div>
+      </div>
+      <p>The report's weighted-demand figure showed the same idea: context narrows attention toward scenarios that better resemble current conditions.</p>
+    </figure>
+  )
+}
+
 function RegretFigure() {
   const max = 13
   return (
     <figure className="rrs-figure regret-figure">
-      <figcaption><span>Figure 03</span><strong>Decision quality improved as uncertainty and context entered the model.</strong></figcaption>
+      <figcaption><span>Report result · redrawn</span><strong>Decision quality improved as uncertainty and context entered the model.</strong></figcaption>
       <div className="regret-chart">
         {modelRows.map((row) => (
           <div className="regret-chart-row" key={row.model}>
@@ -63,7 +98,7 @@ function RegretFigure() {
 function RiskFigure() {
   return (
     <figure className="rrs-figure risk-figure">
-      <figcaption><span>Figure 04</span><strong>The best average model was not the calmest one.</strong></figcaption>
+      <figcaption><span>Report result · redrawn</span><strong>The best average model was not the calmest one.</strong></figcaption>
       <div className="risk-points">
         {modelRows.slice(1).map((row) => (
           <div className="risk-point-row" key={row.model}>
@@ -84,9 +119,9 @@ export default function RRSProject() {
       <article className="rrs-editorial">
         <header className="rrs-editorial-hero">
           <div className="special-hero-nav"><Link className="back-link" to="/work">← Selected work</Link><span>Decision Systems · 2026</span></div>
-          <p className="kicker">Predictive–Prescriptive Logistics</p>
-          <h1>The first optimization problem was not capacity. It was figuring out what the network actually was.</h1>
-          <p className="rrs-standfirst">A logistics planning project about a simple operational question: before tomorrow's demand is known, how much outbound capacity should the network reserve today?</p>
+          <p className="kicker">14.7M order records · ~20 GB raw data · Network optimization</p>
+          <h1>Data-driven network decisions under uncertainty.</h1>
+          <p className="rrs-standfirst">A large logistics dataset became a two-stage planning problem: before tomorrow's demand is known, how much outbound capacity should the network reserve today?</p>
           <div className="rrs-byline">Model-design lead · Developed the modelling theory and directed implementation.</div>
         </header>
 
@@ -119,7 +154,10 @@ export default function RRSProject() {
             <p>Then came a more important contradiction. The order table described where an order was assigned. The movement log described where freight physically travelled. Those are not the same thing.</p>
             <p>An order could appear to move directly from node 081 to node 089, while timestamped movement records showed an intermediate relay through node 082. The transactional network was therefore a fulfilment network, not necessarily a physical one.</p>
           </div>
-          <RouteFigure />
+          <div className="rrs-figure-stack">
+            <RouteFigure />
+            <PathMixFigure />
+          </div>
           <div className="rrs-turn"><span>First turn</span><strong>Before optimizing the network, we had to reconstruct the network.</strong></div>
         </section>
 
@@ -155,7 +193,10 @@ export default function RRSProject() {
             <p>Only after the network and economics were coherent did model comparison become useful. We deliberately built a ladder rather than jumping to the most complex formulation.</p>
             <p>Mean-demand planning provided a deterministic baseline. Sample-average approximation added uncertainty. Context weighting asked whether similar operating conditions improved the decision. A risk-aware extension then asked whether some average performance should be sacrificed to reduce volatility.</p>
           </div>
-          <RegretFigure />
+          <div className="rrs-figure-stack">
+            <ContextWeightFigure />
+            <RegretFigure />
+          </div>
         </section>
 
         <section className="rrs-story-section">

@@ -1,4 +1,6 @@
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { mediaPublicUrl, supabase } from '../lib/supabase'
 
 const modelRows = [
   { model: 'M1', label: 'Mean demand', regret: 12.74, sd: 6.22 },
@@ -113,7 +115,59 @@ function RiskFigure() {
   )
 }
 
+function EvidenceImage({ asset, title, alt, built, matters, fallback }) {
+  if (!asset?.media_path) return fallback || null
+  return (
+    <figure className="rrs-figure rrs-original-figure">
+      <figcaption><span>Original analysis output</span><strong>{title}</strong></figcaption>
+      <img src={mediaPublicUrl(asset.media_path)} alt={alt} />
+      <div className="figure-method-note">
+        <p><b>How I built it</b>{built}</p>
+        <p><b>Why it mattered</b>{matters}</p>
+      </div>
+    </figure>
+  )
+}
+
+function ModelComparisonTable() {
+  const rows = [
+    ['Avg Cost','64.36M','62.56M','60.13M','60.50M'],
+    ['Avg Regret','12.74M','10.94M','8.51M','8.88M'],
+    ['Std Regret','6.22M','2.93M','5.33M','4.01M'],
+    ['Max Regret','24.54M','19.20M','32.48M','24.32M'],
+    ['RDE','0.247','0.212','0.165','0.172'],
+    ['RPG vs M2','−16.5%','—','+22.2%','+18.8%'],
+  ]
+  return (
+    <figure className="rrs-figure report-table-figure">
+      <figcaption><span>Report result · table</span><strong>M3 won on average. The tail told a different story.</strong></figcaption>
+      <div className="report-table-wrap">
+        <table>
+          <thead><tr><th>Metric</th><th>M1<br/><small>Baseline</small></th><th>M2<br/><small>SAA</small></th><th>M3<br/><small>PP + kNN</small></th><th>M4<br/><small>VaR</small></th></tr></thead>
+          <tbody>{rows.map((row)=><tr key={row[0]}>{row.map((cell,i)=><td key={cell} className={i===3 ? 'm3-cell' : ''}>{cell}</td>)}</tr>)}</tbody>
+        </table>
+      </div>
+      <div className="figure-method-note">
+        <p><b>How I built it</b>Out-of-sample decisions were evaluated against a perfect-foresight lower bound, then summarized by average, standard-deviation, and maximum regret.</p>
+        <p><b>Why it mattered</b>M3 achieved the lowest average regret, but its larger tail exposure motivated the M4 risk-control extension.</p>
+      </div>
+    </figure>
+  )
+}
+
 export default function RRSProject() {
+  const [assets, setAssets] = useState({})
+
+  useEffect(() => {
+    if (!supabase) return
+    let active = true
+    supabase.from('project_assets').select('asset_key,media_path,caption').eq('project_id','logistics-network').eq('published',true).then(({ data }) => {
+      if (!active || !data) return
+      setAssets(Object.fromEntries(data.map((item) => [item.asset_key, item])))
+    })
+    return () => { active = false }
+  }, [])
+
   return (
     <>
       <article className="rrs-editorial">
@@ -146,7 +200,14 @@ export default function RRSProject() {
             <p className="rrs-dropcap">Before any stochastic model was built, more than half of the order records had to be removed because origin and destination were the same. The remaining cross-hub traffic was highly concentrated: a small share of arcs carried most of the flow.</p>
             <p>That concentration made network reconstruction consequential. A mistaken hub role or a false direct connection would not be a cosmetic data-cleaning issue; it would change where the optimization model believed capacity was needed.</p>
           </div>
-          <TrafficFigure />
+          <EvidenceImage
+            asset={assets.network_outbound}
+            title="Top outbound OD flows from Hub 081"
+            alt="Original horizontal bar chart of outbound origin-destination flows from Hub 081"
+            built="Filtered to inter-center orders, aggregated order counts by origin-destination pair, and ranked the outbound destinations of Hub 081."
+            matters="The concentration of flow showed that a small number of destination relationships dominate tactical capacity decisions."
+            fallback={<TrafficFigure />}
+          />
         </section>
 
         <section className="rrs-story-section alternate">
@@ -156,7 +217,14 @@ export default function RRSProject() {
           </div>
           <div className="rrs-figure-stack">
             <RouteFigure />
-            <PathMixFigure />
+            <EvidenceImage
+              asset={assets.path_reconstruction}
+              title="Actual delivery paths: direct vs relay"
+              alt="Original stacked horizontal bar chart comparing direct and relay delivery paths by destination"
+              built="Reconstructed approximately 1.9 million timestamped delivery paths, then classified each destination's shipments as direct from CDC 081 or routed through an RDC."
+              matters="The chart exposed destinations such as 089 with effectively zero direct flow, preventing unsupported direct arcs from entering the optimization model."
+              fallback={<PathMixFigure />}
+            />
           </div>
           <div className="rrs-turn"><span>First turn</span><strong>Before optimizing the network, we had to reconstruct the network.</strong></div>
         </section>
@@ -194,8 +262,16 @@ export default function RRSProject() {
             <p>Mean-demand planning provided a deterministic baseline. Sample-average approximation added uncertainty. Context weighting asked whether similar operating conditions improved the decision. A risk-aware extension then asked whether some average performance should be sacrificed to reduce volatility.</p>
           </div>
           <div className="rrs-figure-stack">
-            <ContextWeightFigure />
+            <EvidenceImage
+              asset={assets.context_weighting}
+              title="Weighted demand distribution P(Y | X=x)"
+              alt="Original histogram comparing uniform and k-nearest-neighbour weighted demand distributions"
+              built="Treated historical days as empirical demand scenarios; M2 used equal weights while M3 used standardized context features with k-nearest neighbours to reweight similar operating days."
+              matters="The shift toward a conditional demand distribution explains why context improved average decision quality—and why local weighting could increase sensitivity to unusual outcomes."
+              fallback={<ContextWeightFigure />}
+            />
             <RegretFigure />
+            <ModelComparisonTable />
           </div>
         </section>
 
@@ -204,7 +280,16 @@ export default function RRSProject() {
             <p>The contextual model produced the lowest average regret. That sounds like the end of the story, but it created another trade-off: its outcomes were more volatile.</p>
             <p>The risk-aware version gave up a small amount of average performance and reduced that volatility. In other words, better context improved the typical decision, but concentrating too heavily on local scenarios could also make the plan more brittle.</p>
           </div>
-          <RiskFigure />
+          <div className="rrs-figure-stack">
+            <RiskFigure />
+            <EvidenceImage
+              asset={assets.arc_capacity}
+              title="Activated arc capacities by model"
+              alt="Original model output comparing reserved capacity on an activated network arc"
+              built="Extracted first-stage reserved-capacity decisions from each benchmark model and compared how the policy changed as uncertainty, context, and risk control were added."
+              matters="It translates abstract regret differences back into the operational quantity the planner actually controls: reserved capacity."
+            />
+          </div>
           <div className="rrs-turn"><span>Final turn</span><strong>Better prediction did not automatically mean safer decisions.</strong></div>
         </section>
 

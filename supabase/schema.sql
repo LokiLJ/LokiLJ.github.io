@@ -135,8 +135,12 @@ with check (public.is_admin());
 insert into public.about_profile (id, heading, body, published)
 values (
   1,
-  'Quantitative modelling meets decisions that have to be made anyway.',
-  'I came to analytics through finance and capital markets. Recent work has taken me into production scheduling, hospital staffing, logistics, responsible AI, language models, and software. Across those domains, I am most interested in finding the real decision behind the initial problem and carrying the analysis through to something a person can actually use.',
+  'I came to analytics through finance. I stayed for the decisions.',
+  'My training started in finance and capital markets: two undergraduate finance degrees, then work across investment banking, securities, and commercial credit. I learned to read a business through cash flows, incentives, risk, and the decisions hidden behind reported numbers.
+
+The Master of Management Analytics at the University of Alberta expanded the toolkit. Since then, my work has moved across production scheduling, hospital staffing, logistics, credit strategy, responsible AI, and language models. The domains change, but the pattern is usually the same: the first framing is rarely the real problem.
+
+What I enjoy most is the part between analysis and action—questioning the initial assumption, choosing a model that matches the decision, and carrying the result through to a tool, policy, or workflow someone can actually use. I also teach mathematics and programming independently, which has made clear explanation part of how I work, not an afterthought.',
   true
 )
 on conflict (id) do nothing;

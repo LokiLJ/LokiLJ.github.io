@@ -1,6 +1,17 @@
 import { useEffect, useMemo, useState } from 'react'
 import { cmsConfigured, mediaPublicUrl, supabase } from '../lib/supabase'
 
+const defaultAboutCopy = {
+  heading: 'I came to analytics through finance. I stayed for the decisions.',
+  body: `My training started in finance and capital markets: two undergraduate finance degrees, then work across investment banking, securities, and commercial credit. I learned to read a business through cash flows, incentives, risk, and the decisions hidden behind reported numbers.
+
+The Master of Management Analytics at the University of Alberta expanded the toolkit. Since then, my work has moved across production scheduling, hospital staffing, logistics, credit strategy, responsible AI, and language models. The domains change, but the pattern is usually the same: the first framing is rarely the real problem.
+
+What I enjoy most is the part between analysis and action—questioning the initial assumption, choosing a model that matches the decision, and carrying the result through to a tool, policy, or workflow someone can actually use. I also teach mathematics and programming independently, which has made clear explanation part of how I work, not an afterthought.`,
+}
+const legacyAboutHeading = 'Quantitative modelling meets decisions that have to be made anyway.'
+const legacyAboutBody = 'I came to analytics through finance and capital markets. Recent work has taken me into production scheduling, hospital staffing, logistics, responsible AI, language models, and software. Across those domains, I am most interested in finding the real decision behind the initial problem and carrying the analysis through to something a person can actually use.'
+
 const emptyInterest = { title: '', slug: '', description: '', cover_path: '', sort_order: 0, published: false }
 const emptyBlock = { type: 'text', content: '', media_url: '', media_path: '', caption: '', sort_order: 0, published: true }
 
@@ -66,7 +77,11 @@ function AboutEditor() {
 
   useEffect(() => {
     supabase.from('about_profile').select('*').eq('id', 1).maybeSingle().then(({ data }) => {
-      if (data) setForm(data)
+      if (data) setForm({
+        ...data,
+        heading: data.heading === legacyAboutHeading ? defaultAboutCopy.heading : data.heading,
+        body: data.body === legacyAboutBody ? defaultAboutCopy.body : data.body,
+      })
     })
   }, [])
 

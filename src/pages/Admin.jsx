@@ -199,7 +199,7 @@ function ProjectAssetsEditor() {
     const { data, error } = await supabase
       .from('project_assets')
       .select('*')
-      .in('project_id', ['production-scheduling', 'logistics-network'])
+      .in('project_id', ['production-scheduling', 'logistics-network', 'loan-strategy'])
     if (error) return setMessage(error.message)
     setAssets(Object.fromEntries((data || []).map((item) => [assetKey(item.project_id, item.asset_key), item])))
   }
@@ -271,6 +271,15 @@ function ProjectAssetsEditor() {
         <p className="admin-help">Public-facing synthetic deliverables for the capstone case study.</p>
         <AssetRow projectId="production-scheduling" assetKey="dashboard_demo" title="Redacted dashboard video" accept="video/*" help="Synthetic-data dashboard recording with the location-specific label redacted." />
         <AssetRow projectId="production-scheduling" assetKey="scheduler_excel" title="Synthetic scheduler workbook" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" help="Public synthetic Excel deliverable." />
+      </section>
+
+      <section className="asset-group">
+        <p className="eyebrow">Loan strategy visuals</p>
+        <p className="admin-help">Original code-generated outputs from the loan approval project.</p>
+        <AssetRow projectId="loan-strategy" assetKey="correlation_heatmap" title="Correlation heatmap" accept="image/*" help="Original heatmap showing the near-zero credit-score / approval relationship." />
+        <AssetRow projectId="loan-strategy" assetKey="feature_importance" title="XGBoost feature importance" accept="image/*" help="Original gain-based feature importance chart." />
+        <AssetRow projectId="loan-strategy" assetKey="credit_score_bins" title="Approval by credit-score band" accept="image/*" help="Original approval-rate chart across credit-score categories." />
+        <AssetRow projectId="loan-strategy" assetKey="dti_deciles" title="DTI decile analysis" accept="image/*" help="Original chart comparing approval, pricing, and credit quality across DTI groups." />
       </section>
 
       <section className="asset-group">

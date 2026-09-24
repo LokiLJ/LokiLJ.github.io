@@ -128,7 +128,7 @@ function RentOwnEffectFigure() {
 function EconometricsPivot() {
   return (
     <div className="econometrics-pivot">
-      <article><span>What ML kept answering</span><strong>Who gets approved?</strong><p>Different classifiers reproduced the label, but none explained why credit score could sit near zero correlation and still coexist with a highly predictable approval rule.</p></article>
+      <article><span>What ML kept answering</span><strong>Who gets approved?</strong><p>Different classifiers reproduced the imbalanced synthetic label, but none explained why credit score could sit near zero correlation while a hard default rule made the outcome comparatively easy to separate.</p></article>
       <i>→</i>
       <article className="pivot-middle"><span>The idea I borrowed from econometrics</span><strong>Direction can be a clue before it is proof.</strong><p>A weak or imprecise effect should not become a conclusion, but its sign can still generate a hypothesis. Causal inference also asks what remains after making groups more comparable.</p></article>
       <i>→</i>
@@ -218,9 +218,9 @@ export default function LoanStrategyProject() {
       <section className="loan-story-section alternate">
         <div className="loan-prose">
           <p>As a group, we tried the obvious response to the anomaly: more machine learning. Logistic Regression, a Decision Tree, Random Forest, SVM, and XGBoost all attacked the same approval label from different angles.</p>
-          <p>The models became better at reproducing the synthetic decision rule, but not at explaining the puzzle. XGBoost still achieved an AUC of 0.980 after credit score was removed. We had a strong predictive answer and a weak economic explanation.</p>
+          <p>The models became better at reproducing the synthetic decision rule, but not at explaining the puzzle. XGBoost still reported an ROC-AUC of 0.980 after credit score was removed—but I do not treat that number as proof of a strong underwriting model. Only about 22% of applications were approvals, and the synthetic label contained a near-deterministic default screen. The metric mainly told us that the rule was easy to recover, not that we had explained it.</p>
         </div>
-        <EvidenceFigure asset={assets.feature_importance} title="XGBoost feature importance" alt="Original XGBoost gain-based feature importance chart from the loan approval project" built="Trained the tuned XGBoost classifier after one-hot encoding the categorical features, then stress-tested the result by removing credit score." matters="Prediction stayed strong even without credit score. That told us the anomaly was not going to be resolved simply by trying a more flexible classifier." fallback={<div className="loan-model-fallback"><span>XGBoost without credit score</span><strong>AUC 0.980</strong><p>Prediction survived. Explanation did not.</p></div>} />
+        <EvidenceFigure asset={assets.feature_importance} title="XGBoost feature importance" alt="Original XGBoost gain-based feature importance chart from the loan approval project" built="Trained the tuned XGBoost classifier after one-hot encoding the categorical features, then stress-tested the result by removing credit score." matters="ROC-AUC stayed high even without credit score, but the target was imbalanced and the synthetic approval rule contained a very strong default gate. I therefore treated AUC as evidence that the label rule was recoverable—not as evidence that the model was economically well specified." fallback={<div className="loan-model-fallback"><span>XGBoost without credit score</span><strong>ROC-AUC 0.980</strong><p>22.2% approvals · strong label separation · not an explanation of the lending logic</p></div>} />
         <div className="loan-turn"><span>Second turn</span><strong>More machine learning kept answering the same question better. It did not answer the question we now cared about.</strong></div>
       </section>
 
@@ -268,7 +268,7 @@ export default function LoanStrategyProject() {
         <p className="eyebrow">What changed in the project</p>
         <h2>The breakthrough was not a better classifier. It was borrowing a different way of thinking.</h2>
         <p>Our group used machine learning to show that the synthetic approval rule was highly predictable. My contribution was the pivot from prediction to explanation: drawing on econometric reasoning and IPW to ask counterfactual-style comparison questions, then using those results to reconstruct the two-stage lending mechanism hiding behind the near-zero credit-score relationship.</p>
-        <div className="publication-note">Synthetic dataset. IPW and matching rely on overlap and conditional-independence assumptions and cannot eliminate unobserved confounding or identify managerial intent.</div>
+        <div className="publication-note">Synthetic dataset. Approval prevalence is about 22.2%, so ROC-AUC is reported alongside class-specific performance rather than treated as a standalone measure of business quality. IPW and matching rely on overlap and conditional-independence assumptions and cannot eliminate unobserved confounding or identify managerial intent.</div>
         <div className="project-actions"><Link className="button secondary" to="/work">Back to all work</Link></div>
       </section>
     </article>

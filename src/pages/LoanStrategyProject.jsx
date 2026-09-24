@@ -125,6 +125,37 @@ function RentOwnEffectFigure() {
   )
 }
 
+function EconometricsPivot() {
+  return (
+    <div className="econometrics-pivot">
+      <article><span>What ML kept answering</span><strong>Who gets approved?</strong><p>Different classifiers reproduced the label, but none explained why credit score could sit near zero correlation and still coexist with a highly predictable approval rule.</p></article>
+      <i>→</i>
+      <article className="pivot-middle"><span>The idea I borrowed from econometrics</span><strong>Direction can be a clue before it is proof.</strong><p>A weak or imprecise effect should not become a conclusion, but its sign can still generate a hypothesis. Causal inference also asks what remains after making groups more comparable.</p></article>
+      <i>→</i>
+      <article className="pivot-ipw"><span>The method that unlocked the next step</span><strong>Propensity scores + IPW</strong><p>Instead of ranking predictors, reweight borrowers so observed covariates are balanced and inspect which approval gaps persist.</p></article>
+    </div>
+  )
+}
+
+function LendingRuleFigure() {
+  return (
+    <div className="lending-rule-figure">
+      <div className="rule-stage">
+        <span>Stage 1 · hard screen</span><strong>Previous default?</strong>
+        <div className="rule-branches">
+          <div className="rule-branch reject"><b>Yes</b><em>0% approval in this synthetic dataset</em></div>
+          <div className="rule-branch continue"><b>No</b><em>continue to pricing / burden trade-off</em></div>
+        </div>
+      </div>
+      <i>→</i>
+      <div className="rule-stage yield-stage">
+        <span>Stage 2 · among survivors</span><strong>Earn more without crossing the first risk gate</strong>
+        <ul><li>higher DTI → much higher approval</li><li>higher DTI → higher interest pricing</li><li>average credit score stays comparatively flat</li><li>lower-credit group retains an approval advantage after adjustment</li></ul>
+      </div>
+    </div>
+  )
+}
+
 function BalanceFlow() {
   return (
     <div className="loan-balance-flow">
@@ -158,7 +189,7 @@ export default function LoanStrategyProject() {
         <div className="special-hero-nav"><Link className="back-link" to="/work">← Selected work</Link><span>Finance & Risk · 2025</span></div>
         <p className="kicker">45,000 loan applications · Machine learning → causal inference</p>
         <h1>When credit score explained almost nothing.</h1>
-        <p className="loan-standfirst">We began with 45,000 synthetic loan applications and a familiar task: reproduce the approval rule with machine learning. One small number changed the project. Credit score—the variable we expected to anchor lending risk—had a correlation of roughly −0.01 with approval.</p>
+        <p className="loan-standfirst">We began as a group with 45,000 synthetic loan applications and a familiar task: reproduce the approval rule with machine learning. The turning point was not that prediction failed. Prediction worked. What failed was our ability to explain why credit score—the variable we expected to anchor lending risk—had a correlation of roughly −0.01 with approval.</p>
         <div className="rrs-byline">Technical lead · Designed and implemented the modelling and econometric analysis.</div>
       </header>
 
@@ -186,90 +217,57 @@ export default function LoanStrategyProject() {
 
       <section className="loan-story-section alternate">
         <div className="loan-prose">
-          <p>We did not abandon prediction immediately. Instead, we used the classifier as a stress test of the anomaly. If credit score really carried essential approval information, removing it should damage performance.</p>
-          <p>It did not. An XGBoost model trained without credit score still reached an AUC of 0.980 on the held-out test set. The model could reproduce approvals extremely well while barely needing the variable that normally anchors a credit-risk narrative.</p>
+          <p>As a group, we tried the obvious response to the anomaly: more machine learning. Logistic Regression, a Decision Tree, Random Forest, SVM, and XGBoost all attacked the same approval label from different angles.</p>
+          <p>The models became better at reproducing the synthetic decision rule, but not at explaining the puzzle. XGBoost still achieved an AUC of 0.980 after credit score was removed. We had a strong predictive answer and a weak economic explanation.</p>
         </div>
-        <EvidenceFigure
-          asset={assets.feature_importance}
-          title="XGBoost feature importance"
-          alt="Original XGBoost gain-based feature importance chart from the loan approval project"
-          built="Trained the tuned XGBoost classifier after one-hot encoding the categorical features, then ranked features by gain."
-          matters="The model could classify approvals extremely well without leaning meaningfully on credit score, so prediction alone could not explain the approval mechanism."
-          fallback={<div className="loan-model-fallback"><span>XGBoost without credit score</span><strong>AUC 0.980</strong><p>Predictive performance barely moved when credit score was removed.</p></div>}
-        />
+        <EvidenceFigure asset={assets.feature_importance} title="XGBoost feature importance" alt="Original XGBoost gain-based feature importance chart from the loan approval project" built="Trained the tuned XGBoost classifier after one-hot encoding the categorical features, then stress-tested the result by removing credit score." matters="Prediction stayed strong even without credit score. That told us the anomaly was not going to be resolved simply by trying a more flexible classifier." fallback={<div className="loan-model-fallback"><span>XGBoost without credit score</span><strong>AUC 0.980</strong><p>Prediction survived. Explanation did not.</p></div>} />
+        <div className="loan-turn"><span>Second turn</span><strong>More machine learning kept answering the same question better. It did not answer the question we now cared about.</strong></div>
       </section>
 
       <section className="loan-story-section">
         <div className="loan-prose">
-          <p>Next we looked directly at approval rates across credit-score bands. If the correlation was hiding a simple nonlinear threshold, the bins should have revealed it.</p>
-          <p>They did not. Approval rose from the very-low group into the middle of the distribution, then declined again as credit score improved. Even after restricting the sample to applicants without previous defaults, credit score remained secondary in the model.</p>
+          <p>We also checked whether the near-zero correlation was hiding a simple nonlinear threshold. Approval rates across credit-score bands did not restore the expected monotonic pattern: better credit did not translate into steadily higher approval.</p>
+          <p>At this point, I stopped looking for another classifier. I started looking sideways—toward econometrics.</p>
         </div>
-        <EvidenceFigure
-          asset={assets.credit_score_bins}
-          title="Approval rate by credit-score band"
-          alt="Original line chart of approval rate across very poor to very good credit-score categories"
-          built="Binned the continuous credit score into ordered risk categories and calculated approval rate within each bin."
-          matters="The relationship was visibly non-monotonic: better credit did not translate into steadily higher approval."
-          fallback={<CreditScoreFallback />}
-        />
-        <div className="loan-turn"><span>Second turn</span><strong>Trying a more flexible algorithm did not restore the lending intuition.</strong></div>
+        <EvidenceFigure asset={assets.credit_score_bins} title="Approval rate by credit-score band" alt="Original line chart of approval rate across very poor to very good credit-score categories" built="Binned the continuous credit score into ordered risk categories and calculated approval rate within each bin." matters="The relationship remained non-monotonic, reinforcing that predictive flexibility alone was not revealing the underlying rule." fallback={<CreditScoreFallback />} />
       </section>
 
-      <section className="loan-story-section alternate">
+      <section className="loan-story-section alternate loan-pivot-section">
         <div className="loan-prose">
-          <p>The next clue appeared when risk and pricing were viewed together. Across DTI deciles, applicants with higher debt burdens were approved more often—and were also charged higher interest rates—while average credit score stayed comparatively stable.</p>
-          <p>That pattern suggested a different hypothesis: perhaps the synthetic approval mechanism was screening out extreme risk, then accepting more yield-bearing risk inside the remaining envelope.</p>
+          <p>The useful idea came from a different tradition. In econometrics, an effect does not have to become a headline result to be informative: even when evidence is weak, its sign can still be treated as a hypothesis-generating clue rather than proof. More importantly, causal inference changes the object of analysis from feature importance to comparison.</p>
+          <p>While reading work on propensity scores and inverse probability weighting, I saw a way to ask the question differently: instead of “which variable predicts approval?”, ask “after making borrowers comparable on observed covariates, which approval differences are still left?” That became the methodological pivot of my part of the project.</p>
         </div>
-        <EvidenceFigure
-          asset={assets.dti_deciles}
-          title="Approval, interest, and credit quality across DTI deciles"
-          alt="Original DTI-decile analysis comparing approval rate, interest rate, and credit score"
-          built="Partitioned loan-percent-income into deciles, then summarized approval rate, mean interest rate, and mean credit score within each group."
-          matters="Higher DTI coincided with both higher approval and higher pricing, while credit quality moved much less."
-          fallback={<DtiFallback />}
-        />
+        <EconometricsPivot />
+        <div className="loan-turn"><span>Methodological pivot</span><strong>Prediction ranked signals. Econometrics gave me a way to interrogate the rule.</strong></div>
       </section>
 
       <section className="loan-story-section">
-        <div className="loan-prose">
-          <p>At this point the project had moved beyond feature importance. Raw group differences could still be caused by the types of borrowers inside each group. Renters, owners, lower-score applicants, and higher-score applicants do not enter the dataset with identical incomes, ages, loan purposes, or debt burdens.</p>
-          <p>So the question changed again: after balancing observable borrower composition, which unusual approval gaps were still there?</p>
-        </div>
+        <div className="loan-prose"><p>I translated that idea into three comparisons: Rent vs Own, lower vs higher credit quality within the no-default subsample, and Male vs Female. The aim was not to claim experimental causality from observational synthetic data, but to see which patterns survived observable-covariate balancing.</p><p>Propensity scores compressed observed borrower characteristics into a balancing score. I trimmed poor-overlap cases, used IPW to reconstruct comparable weighted groups, and used nearest-neighbour matching as a robustness check where appropriate.</p></div>
         <BalanceFlow />
-        <div className="loan-method-caption">For each comparison, treatment membership was modeled with logistic regression. Extreme propensity scores were trimmed to the 0.05–0.95 overlap region; IPW estimated adjusted ATE-style contrasts, and one-to-one nearest-neighbour propensity-score matching with replacement was used as a robustness check where appropriate.</div>
+        <div className="loan-method-caption">Treatment membership was modeled with logistic regression. Extreme propensity scores were trimmed to the 0.05–0.95 overlap region; IPW estimated adjusted ATE-style contrasts, and one-to-one nearest-neighbour propensity-score matching with replacement was used as a robustness check.</div>
       </section>
 
       <section className="loan-story-section alternate loan-adjusted-section">
-        <div className="loan-prose">
-          <p>The adjusted comparisons did not all behave the same way. The renter–owner gap survived reweighting at roughly twenty percentage points and remained similar under matching. Within the no-default sample, the lower-credit group also retained the counterintuitive approval advantage. The gender contrast, by comparison, moved toward zero after adjustment.</p>
-          <p>That contrast mattered. It suggested we were not simply looking at one universal source of selection bias: some approval patterns survived observed-covariate balancing while others did not.</p>
-        </div>
-        <div className="loan-causal-evidence">
-          <RentOwnEffectFigure />
-          <div className="loan-adjusted-table">
-            <div className="loan-adjusted-head"><span>Comparison</span><span>Adjusted result</span><span>What survived?</span></div>
-            {adjustedRows.map(row=><div className="loan-adjusted-row" key={row[0]}>{row.map((cell,i)=><span key={cell} className={i===1?'effect-cell':''}>{cell}</span>)}</div>)}
-          </div>
-        </div>
-        <div className="loan-turn"><span>Third turn</span><strong>Balancing borrower composition removed some stories—and strengthened others.</strong></div>
+        <div className="loan-prose"><p>The adjusted results began to separate durable structure from surface correlation. The renter–owner gap survived reweighting at +20.9 percentage points and stayed similar under matching (+22.0 pp ATT). Within the no-default subsample, the lower-credit group also retained the counterintuitive approval advantage. The gender contrast, by comparison, moved toward zero.</p><p>This was the first time the project moved beyond “credit score looks strange” toward a more coherent lending rule.</p></div>
+        <div className="loan-causal-evidence"><RentOwnEffectFigure /><div className="loan-adjusted-table"><div className="loan-adjusted-head"><span>Comparison</span><span>Adjusted result</span><span>What survived?</span></div>{adjustedRows.map(row=><div className="loan-adjusted-row" key={row[0]}>{row.map((cell,i)=><span key={cell} className={i===1?'effect-cell':''}>{cell}</span>)}</div>)}</div></div>
+        <div className="loan-turn"><span>Third turn</span><strong>Balancing borrower composition removed some stories—and made the remaining ones harder to dismiss as simple mix effects.</strong></div>
       </section>
 
       <section className="loan-story-section">
-        <div className="loan-prose">
-          <p>Taken together, the results were consistent with a bounded risk–return mechanism in this synthetic system. Previous default acted like a hard risk screen. Inside the surviving pool, higher-DTI, higher-interest borrowers could receive more approvals even when credit scores were not better.</p>
-          <p>That is an interpretation of the observed synthetic mechanism—not proof of managerial intent, and not a claim about real banks. IPW and matching only address observed covariates under their identifying assumptions.</p>
-        </div>
-        <div className="loan-risk-envelope">
-          <div className="risk-gate"><span>Hard screen</span><strong>Previous default</strong><p>Extreme-risk applicants are largely removed first.</p></div>
-          <i>→</i>
-          <div className="risk-field"><span>Remaining approval envelope</span><strong>Risk can be traded for yield</strong><p>Higher DTI + higher interest can coexist with higher approval.</p></div>
-        </div>
+        <div className="loan-prose"><p>The next clue came from debt burden and pricing. Across DTI deciles, approval climbed from about 10.1% in D1 to 70.9% in D10. Average interest rates also rose, while average credit score stayed almost flat in the low 630s.</p><p>Put beside the adjusted no-default credit result, the pattern looked less like “approve the safest borrower” and more like “once the hard default screen is passed, accept more yield-bearing risk.”</p></div>
+        <EvidenceFigure asset={assets.dti_deciles} title="Approval, interest, and credit quality across DTI deciles" alt="Original DTI-decile analysis comparing approval rate, interest rate, and credit score" built="Partitioned loan-percent-income into deciles, then summarized approval rate, mean interest rate, and mean credit score within each group." matters="Higher DTI coincided with much higher approval and higher pricing while average credit quality barely moved." fallback={<DtiFallback />} />
+      </section>
+
+      <section className="loan-story-section alternate loan-rule-section">
+        <div className="loan-prose"><p>The final interpretation was a two-stage, subprime-style rule embedded in this synthetic dataset. First, previous default acted like a hard exclusion gate: applicants with a recorded prior default had a 0% approval rate. Then, among those who survived that screen, the rule appeared willing to move toward higher-yield lending.</p><p>In plain language: <strong>remove the borrowers who have already defaulted, then try to earn more from the remaining risk envelope.</strong> Higher DTI and higher interest could coexist with higher approval, even when credit score was not improving.</p><p>This is an interpretation of the synthetic mechanism, not proof of a real bank's intent. IPW and matching only address observed covariates under their identifying assumptions.</p></div>
+        <LendingRuleFigure />
+        <div className="loan-turn"><span>What ML could not surface directly</span><strong>A two-stage decision rule: hard default screening first, yield-seeking inside the surviving pool second.</strong></div>
       </section>
 
       <section className="loan-editorial-ending">
         <p className="eyebrow">What changed in the project</p>
-        <h2>Machine learning answered “who gets approved.” The more useful work began when we asked why that answer looked financially strange.</h2>
-        <p>The project became less about squeezing another point of AUC from a classifier and more about distinguishing prediction from explanation: EDA surfaced the anomaly, ML showed it was not a simple modeling failure, and causal-adjustment tools tested which group patterns persisted after observed borrower composition was balanced.</p>
+        <h2>The breakthrough was not a better classifier. It was borrowing a different way of thinking.</h2>
+        <p>Our group used machine learning to show that the synthetic approval rule was highly predictable. My contribution was the pivot from prediction to explanation: drawing on econometric reasoning and IPW to ask counterfactual-style comparison questions, then using those results to reconstruct the two-stage lending mechanism hiding behind the near-zero credit-score relationship.</p>
         <div className="publication-note">Synthetic dataset. IPW and matching rely on overlap and conditional-independence assumptions and cannot eliminate unobserved confounding or identify managerial intent.</div>
         <div className="project-actions"><Link className="button secondary" to="/work">Back to all work</Link></div>
       </section>

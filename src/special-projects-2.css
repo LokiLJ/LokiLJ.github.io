@@ -187,3 +187,112 @@
   .dti-small-multiples,.rent-own-panels{grid-template-columns:1fr}
   .dti-decile-labels{font-size:.55rem}
 }
+
+
+/* Loan pivot + unified hero scale */
+.loan-editorial-hero h1{
+  max-width:820px;
+  font-size:clamp(2.05rem,3.55vw,3.25rem);
+  line-height:1.04;
+}
+.econometrics-pivot{
+  display:grid;
+  grid-template-columns:1fr 34px 1fr 34px 1fr;
+  gap:10px;
+  align-items:stretch;
+}
+.econometrics-pivot article{
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:18px;
+  background:#fff;
+}
+.econometrics-pivot .pivot-middle{background:#f0eee8}
+.econometrics-pivot .pivot-ipw{background:#e4eeeb}
+.econometrics-pivot article>span,
+.lending-rule-figure .rule-stage>span{
+  color:var(--accent);
+  font-size:.66rem;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  font-weight:700;
+}
+.econometrics-pivot article>strong{
+  display:block;
+  margin:12px 0 8px;
+  font-family:'Playfair Display',serif;
+  font-size:1.25rem;
+  line-height:1.25;
+}
+.econometrics-pivot article>p{
+  color:var(--muted);
+  font-size:.8rem;
+  line-height:1.6;
+  margin:0;
+}
+.econometrics-pivot>i{
+  display:grid;
+  place-content:center;
+  font-style:normal;
+  color:var(--muted);
+}
+.lending-rule-figure{
+  display:grid;
+  grid-template-columns:1fr 42px 1fr;
+  gap:12px;
+  align-items:center;
+}
+.lending-rule-figure>.rule-stage{
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:#fff;
+  padding:20px;
+}
+.lending-rule-figure>.yield-stage{background:#e4eeeb}
+.lending-rule-figure>.rule-stage>strong{
+  display:block;
+  font-family:'Playfair Display',serif;
+  font-size:1.55rem;
+  margin:10px 0 16px;
+}
+.rule-branches{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+.rule-branch{
+  padding:12px;
+  border-radius:10px;
+  border:1px solid var(--line);
+}
+.rule-branch.reject{background:#f2e4df}
+.rule-branch.continue{background:#edf2ef}
+.rule-branch b{display:block;margin-bottom:6px}
+.rule-branch em{
+  font-style:normal;
+  color:var(--muted);
+  font-size:.72rem;
+  line-height:1.45;
+}
+.lending-rule-figure>i{
+  text-align:center;
+  font-style:normal;
+  color:var(--muted);
+  font-size:1.5rem;
+}
+.yield-stage ul{
+  margin:0;
+  padding-left:18px;
+  color:#4d504b;
+  font-size:.8rem;
+  line-height:1.65;
+}
+.loan-rule-section{background:#f6f6f1}
+@media(max-width:840px){
+  .econometrics-pivot,.lending-rule-figure{grid-template-columns:1fr}
+  .econometrics-pivot>i,.lending-rule-figure>i{transform:rotate(90deg)}
+}
+@media(max-width:620px){
+  .loan-editorial-hero h1{font-size:clamp(2rem,8.8vw,2.9rem)}
+  .rule-branches{grid-template-columns:1fr}
+}

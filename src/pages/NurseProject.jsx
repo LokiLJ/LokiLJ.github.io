@@ -81,11 +81,13 @@ export default function NurseProject() {
           <p>We therefore built tier-specific models. Test MAPE landed at 6.60% for CCRN, 8.77% for Ward RN, and 11.11% for RPN. The more important modelling detail, however, was not the ranking of those errors.</p>
           <p>CCRN required an AR(1) correction after a Breusch–Godfrey test detected lag-1 autocorrelation; the correction reduced residual sigma by about 11%. Ward RN needed no such correction. Adding extra Fourier terms for RPN did not help because the post-COVID sample was too small to support more seasonal parameters.</p>
         </div>
-        <div className="forecast-cards nurse-forecast-compact">
-          <article><span>CCRN</span><strong>6.60% MAPE</strong><p>OLS + AR(1) · residual sigma 35.4 → 31.5</p></article>
-          <article><span>Ward RN</span><strong>8.77% MAPE</strong><p>OLS · residuals behaved independently</p></article>
-          <article><span>RPN</span><strong>11.11% MAPE</strong><p>Strong seasonality · extra Fourier terms added no value</p></article>
-        </div>
+        <EvidenceImage asset={assets.tier_forecasts} title="FY2025–26 tier-specific forecasts with 90% prediction intervals" alt="Original project figure showing post-COVID history, FY2025–26 forecasts, and 90% prediction intervals for CCRN, Ward RN, and RPN" fallback={
+          <div className="forecast-cards nurse-forecast-compact">
+            <article><span>CCRN</span><strong>6.60% MAPE</strong><p>OLS + AR(1) · residual sigma 35.4 → 31.5</p></article>
+            <article><span>Ward RN</span><strong>8.77% MAPE</strong><p>OLS · residuals behaved independently</p></article>
+            <article><span>RPN</span><strong>11.11% MAPE</strong><p>Strong seasonality · extra Fourier terms added no value</p></article>
+          </div>
+        } />
       </section>
 
       <section className="nurse-story-section">
@@ -93,7 +95,7 @@ export default function NurseProject() {
           <p>The next problem was dependence. CCRN and Ward RN demand were negatively related in the raw first differences: when critical-care demand rose, ward demand often moved the other way.</p>
           <p>But after seasonal residualization, that sign flipped from −0.209 to +0.283. If we had used residual correlation mechanically, the Monte Carlo engine would have invented positive co-movement and overstated joint tail risk.</p>
         </div>
-        <EvidenceImage asset={assets.correlation_diagnostics} title="Cross-tier dependence diagnostics" alt="Original analysis comparing raw and residual nurse-tier correlations" fallback={<ScenarioFallback />} />
+        <ScenarioFallback />
         <div className="nurse-turn"><span>Second turn</span><strong>A cleaner statistical residual was not the more faithful operational signal.</strong></div>
       </section>
 
@@ -114,7 +116,7 @@ export default function NurseProject() {
           <p>The economic effect was material. The joint LP reduced projected deterministic annual cost by $100,377 versus the independent newsvendor benchmark, and by $98,882 on average across the 1,000 scenarios. The biggest staffing shift was RPN: 49.4 FTE independently versus 38.8 under the substitution-aware LP.</p>
           <p>That result reframed the value story. Additional forecast complexity could only trim a small part of total cost. The architecture of the decision—who can cover whom—was the larger lever.</p>
         </div>
-        <EvidenceImage asset={assets.lp_vs_newsvendor} title="LP versus independent newsvendor" alt="Original project comparison of staffing plans and annual costs" fallback={
+        <EvidenceImage asset={assets.lp_vs_newsvendor} title="1,000-scenario cost distribution: LP versus closed-form benchmark" alt="Original histogram comparing the 1,000-scenario total annual cost distributions for the LP and closed-form benchmark" fallback={
           <div className="nurse-impact-compact">
             <article><span>Deterministic annual saving</span><strong>$100,377</strong></article>
             <article><span>Scenario mean saving</span><strong>$98,882</strong></article>
@@ -128,14 +130,12 @@ export default function NurseProject() {
           <p>A staffing plan also needs a rule for when it stops being trustworthy. In the base case, the gap versus an ex-post optimum was 3.15%; under combined cost stress it rose to 5.18%. Ward RN demand acceleration was the clearest operational risk signal.</p>
           <p>So the deliverable ended with monitoring triggers rather than a static “optimal” number: watch demand drift, utilization, and the overtime/agency mix; re-run the LP when those signals persistently cross threshold.</p>
         </div>
-        <EvidenceImage asset={assets.monitoring_framework} title="Monitoring triggers and response owners" alt="Original project monitoring framework for staffing re-optimization" fallback={
-          <div className="monitor-flow">
-            <article><span>Signal</span><strong>Demand drift</strong></article><i>→</i>
-            <article><span>Trigger</span><strong>Persistent breach</strong></article><i>→</i>
-            <article><span>Response</span><strong>Re-run LP</strong></article><i>→</i>
-            <article><span>Owner</span><strong>Named team</strong></article>
-          </div>
-        } />
+        <div className="monitor-flow">
+          <article><span>Signal</span><strong>Demand drift</strong><p>Forecast misses persist across consecutive months.</p></article><i>→</i>
+          <article><span>Trigger</span><strong>Threshold breach</strong><p>Utilization, demand growth, or OT/agency mix moves beyond the agreed limit.</p></article><i>→</i>
+          <article><span>Response</span><strong>Re-run the LP</strong><p>Refresh forecasts, scenarios, and the substitution-aware staffing plan.</p></article><i>→</i>
+          <article><span>Owner</span><strong>Named operating team</strong><p>The model becomes a governed process rather than a one-off answer.</p></article>
+        </div>
       </section>
 
       <section className="nurse-editorial-ending">

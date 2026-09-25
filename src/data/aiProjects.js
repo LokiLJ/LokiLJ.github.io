@@ -24,7 +24,7 @@ export const aiProjects = [
     id: 'diffusion-transformer',
     area: 'AI & Data Science',
     year: '2026',
-    depth: 'deep',
+    depth: 'compact',
     title: 'Diffusion Transformer for Traditional Chinese Handwriting',
     eyebrow: 'Generative AI · Experimental Diagnosis',
     metric: '1 line',

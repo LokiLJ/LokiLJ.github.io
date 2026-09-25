@@ -56,8 +56,8 @@ export default function Work() {
 
       <section className="section archive-section">
         <div className="section-heading wide-heading">
-          <div><p className="section-number">Additional work</p><h2>Smaller projects and earlier work.</h2></div>
-          <p>These fill out the toolkit—API engineering, reinforcement learning, relational data systems, macroeconometrics, and earlier corporate-finance work—without competing with the flagship case studies for attention.</p>
+          <div><p className="section-number">Project archive</p><h2>Additional work, kept intentionally brief.</h2></div>
+          <p>These projects remain visible as concise evidence of breadth, but their full case-study pages are intentionally unpublished for now so the portfolio stays focused on the work that is already presentation-ready.</p>
         </div>
         <div className="archive-grid">{compactProjects.map((project) => <CompactCard key={project.id} project={project} />)}</div>
       </section>

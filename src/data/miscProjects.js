@@ -1,6 +1,6 @@
 export const miscProjects = [
   {
-    id: 'gomoku', area: 'Software', year: '2026', depth: 'deep',
+    id: 'gomoku', area: 'Software', year: '2026', depth: 'compact',
     title: 'Real-Time Multiplayer Gomoku Server', eyebrow: 'Backend · WebSockets · Concurrency',
     metric: 'Server-authoritative', metricLabel: 'shared game state, timers, validation, undo, spectators, and disconnect handling',
     summary: 'A personal software project that grew from a board game into a real-time asynchronous state-management problem.',

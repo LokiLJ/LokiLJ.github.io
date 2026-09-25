@@ -298,19 +298,11 @@ function ProjectAssetsEditor() {
       </section>
 
       <section className="asset-group">
-        <p className="eyebrow">Qwen fine-tuning visuals</p>
-        <p className="admin-help">Original assignment outputs. Prefer clean screenshots or exported figures rather than full notebook pages.</p>
-        <AssetRow projectId="qwen-finetuning" assetKey="budget_example" title="Base vs tuned response comparison" accept="image/*" help="One clean example showing the same task/output budget before and after fine-tuning, ideally where the base response is verbose or truncated and the tuned response finishes." />
-        <AssetRow projectId="qwen-finetuning" assetKey="transfer_examples" title="Transfer + failure examples" accept="image/*" help="A compact composite or clean screenshots covering at least one successful transfer (e.g. VB / GMAT / multi-bug) and the Python object-model failure boundary." />
-      </section>
-
-      <section className="asset-group">
         <p className="eyebrow">Nurse staffing visuals</p>
-        <p className="admin-help">Use only figures you generated from the analysis. Do not upload licensed case exhibits or raw case data.</p>
-        <AssetRow projectId="nurse-staffing" assetKey="demand_history" title="Tier demand history / structural break" accept="image/*" help="Your own chart of CCRN, Ward RN, and RPN demand over time, preferably showing the COVID-era regime break." />
-        <AssetRow projectId="nurse-staffing" assetKey="correlation_diagnostics" title="Cross-tier correlation diagnostic" accept="image/*" help="Your own chart or compact output showing the raw negative CCRN–Ward RN dependence and the residual sign flip." />
-        <AssetRow projectId="nurse-staffing" assetKey="lp_vs_newsvendor" title="LP vs newsvendor result" accept="image/*" help="Your own result figure/table comparing FTE mix and projected costs. Avoid reproducing source-case exhibits." />
-        <AssetRow projectId="nurse-staffing" assetKey="monitoring_framework" title="Monitoring framework" accept="image/*" help="Your own signal → trigger → response → owner diagram or table." />
+        <p className="admin-help">Three original analysis figures are used directly on the public case page. The correlation sign-flip and monitoring framework are redrawn in the site itself.</p>
+        <AssetRow projectId="nurse-staffing" assetKey="demand_history" title="Monthly nurse demand history" accept="image/*" help="Upload the SMH Monthly Nurse Requests figure spanning Oct 2017–Feb 2025 with the COVID-acute shading." />
+        <AssetRow projectId="nurse-staffing" assetKey="tier_forecasts" title="Tier-specific FY2025–26 forecasts" accept="image/*" help="Upload the three-panel CCRN / Ward RN / RPN forecast figure with 90% prediction intervals." />
+        <AssetRow projectId="nurse-staffing" assetKey="lp_vs_newsvendor" title="1,000-scenario cost distribution" accept="image/*" help="Upload the LP vs closed-form scenario-cost histogram with mean and P95 markers." />
       </section>
 
       <section className="asset-group">

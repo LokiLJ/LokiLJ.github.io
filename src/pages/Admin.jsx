@@ -214,7 +214,7 @@ function ProjectAssetsEditor() {
     const { data, error } = await supabase
       .from('project_assets')
       .select('*')
-      .in('project_id', ['production-scheduling', 'logistics-network', 'loan-strategy'])
+      .in('project_id', ['production-scheduling', 'logistics-network', 'loan-strategy', 'qwen-finetuning', 'nurse-staffing', 'csdi-imputation'])
     if (error) return setMessage(error.message)
     setAssets(Object.fromEntries((data || []).map((item) => [assetKey(item.project_id, item.asset_key), item])))
   }
@@ -295,6 +295,32 @@ function ProjectAssetsEditor() {
         <AssetRow projectId="loan-strategy" assetKey="feature_importance" title="XGBoost feature importance" accept="image/*" help="Original gain-based feature importance chart." />
         <AssetRow projectId="loan-strategy" assetKey="credit_score_bins" title="Approval by credit-score band" accept="image/*" help="Original approval-rate chart across credit-score categories." />
         <AssetRow projectId="loan-strategy" assetKey="dti_deciles" title="DTI decile analysis" accept="image/*" help="Original chart comparing approval, pricing, and credit quality across DTI groups." />
+      </section>
+
+      <section className="asset-group">
+        <p className="eyebrow">Qwen fine-tuning visuals</p>
+        <p className="admin-help">Original assignment outputs. Prefer clean screenshots or exported figures rather than full notebook pages.</p>
+        <AssetRow projectId="qwen-finetuning" assetKey="budget_example" title="Base vs tuned response comparison" accept="image/*" help="One clean example showing the same task/output budget before and after fine-tuning, ideally where the base response is verbose or truncated and the tuned response finishes." />
+        <AssetRow projectId="qwen-finetuning" assetKey="transfer_examples" title="Transfer + failure examples" accept="image/*" help="A compact composite or clean screenshots covering at least one successful transfer (e.g. VB / GMAT / multi-bug) and the Python object-model failure boundary." />
+      </section>
+
+      <section className="asset-group">
+        <p className="eyebrow">Nurse staffing visuals</p>
+        <p className="admin-help">Use only figures you generated from the analysis. Do not upload licensed case exhibits or raw case data.</p>
+        <AssetRow projectId="nurse-staffing" assetKey="demand_history" title="Tier demand history / structural break" accept="image/*" help="Your own chart of CCRN, Ward RN, and RPN demand over time, preferably showing the COVID-era regime break." />
+        <AssetRow projectId="nurse-staffing" assetKey="correlation_diagnostics" title="Cross-tier correlation diagnostic" accept="image/*" help="Your own chart or compact output showing the raw negative CCRN–Ward RN dependence and the residual sign flip." />
+        <AssetRow projectId="nurse-staffing" assetKey="lp_vs_newsvendor" title="LP vs newsvendor result" accept="image/*" help="Your own result figure/table comparing FTE mix and projected costs. Avoid reproducing source-case exhibits." />
+        <AssetRow projectId="nurse-staffing" assetKey="monitoring_framework" title="Monitoring framework" accept="image/*" help="Your own signal → trigger → response → owner diagram or table." />
+      </section>
+
+      <section className="asset-group">
+        <p className="eyebrow">CSDI / CGM visuals</p>
+        <p className="admin-help">Original report figures work well here because the story depends heavily on missingness regime and calibration.</p>
+        <AssetRow projectId="csdi-imputation" assetKey="random_missing_comparison" title="Random 30% benchmark" accept="image/*" help="A clean figure comparing interpolation and diffusion performance under random missingness; the probabilistic best/typical/challenging figure is also suitable." />
+        <AssetRow projectId="csdi-imputation" assetKey="gap_reliability" title="Imputation quality vs gap length" accept="image/*" help="The report figure plotting RMSE and hypoglycemia sensitivity across gap length." />
+        <AssetRow projectId="csdi-imputation" assetKey="cross_modal_ablation" title="Cross-modal ablation" accept="image/*" help="A figure or table comparing 7-channel vs glucose-only CSDI under random and 2-hour blackout settings." />
+        <AssetRow projectId="csdi-imputation" assetKey="real_world_gaps" title="Real-world gap distribution" accept="image/*" help="The report visualization of the empirical PhysioCGM gap-length distribution / semi-synthetic real-world benchmark." />
+        <AssetRow projectId="csdi-imputation" assetKey="calibration" title="Calibration / coverage analysis" accept="image/*" help="The figure showing confidence-interval calibration or coverage deterioration for long blackout gaps." />
       </section>
 
       <section className="asset-group">

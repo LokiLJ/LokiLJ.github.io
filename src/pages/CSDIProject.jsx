@@ -1,4 +1,6 @@
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { mediaPublicUrl, supabase } from '../lib/supabase'
 
 const reliabilityRows = [
   { label: 'Random 30%', rmse: 6.88, sens: 0.811, width: 22 },
@@ -7,104 +9,143 @@ const reliabilityRows = [
   { label: 'Real-world gaps', rmse: 31.71, sens: 0.190, width: 100 },
 ]
 
-export default function CSDIProject() {
+function EvidenceImage({ asset, title, alt, fallback }) {
+  if (!asset?.media_path) return fallback || null
   return (
-    <>
-      <section className="project-special-hero csdi-hero">
+    <figure className="csdi-evidence">
+      <figcaption><span>Original report output</span><strong>{title}</strong></figcaption>
+      <img src={mediaPublicUrl(asset.media_path)} alt={alt} />
+    </figure>
+  )
+}
+
+function ReliabilityFallback() {
+  return (
+    <div className="reliability-chart">
+      {reliabilityRows.map((row)=><div className="reliability-row" key={row.label}>
+        <div className="reliability-label"><strong>{row.label}</strong><span>RMSE {row.rmse.toFixed(2)} · Hypo sens {row.sens.toFixed(3)}</span></div>
+        <div className="reliability-track"><i style={{width:row.width+'%'}}></i></div>
+        <div className="sensitivity-dot-wrap"><i style={{left:(row.sens*100)+'%'}}></i></div>
+      </div>)}
+      <div className="reliability-legend"><span>Bar length → RMSE severity</span><span>Dot position → hypoglycemia sensitivity</span></div>
+    </div>
+  )
+}
+
+export default function CSDIProject() {
+  const [assets,setAssets]=useState({})
+
+  useEffect(()=>{
+    if(!supabase) return
+    let active=true
+    supabase.from('project_assets').select('asset_key,media_path,caption').eq('project_id','csdi-imputation').eq('published',true).then(({data})=>{
+      if(active && data) setAssets(Object.fromEntries(data.map(item=>[item.asset_key,item])))
+    })
+    return()=>{active=false}
+  },[])
+
+  return (
+    <article className="csdi-editorial">
+      <header className="project-special-hero csdi-hero">
         <div className="special-hero-nav"><Link className="back-link" to="/work">← Selected work</Link><span>Healthcare · 2026</span></div>
-        <p className="kicker">Probabilistic Imputation · CSDI · PhysioCGM</p>
-        <h1>The useful question was not “Which model has the lowest RMSE?”</h1>
-        <p className="special-deck">It was: under what missing-data conditions does an imputation model remain clinically informative, and when should we stop trusting the reconstruction?</p>
+        <p className="kicker">10 T1D participants · Multimodal CGM imputation · CSDI</p>
+        <h1>A more complex model was not always the safer answer.</h1>
+        <p className="special-deck">The project began with a familiar machine-learning question: can diffusion models reconstruct missing continuous-glucose-monitor data better than conventional methods? The more useful question became: under which missingness conditions should anyone trust the reconstruction at all?</p>
         <div className="project-role">Team project · Proposed the CSDI-centered direction and owned the complete CSDI engineering, experimental execution, and shared clinical evaluation framework.</div>
+      </header>
+
+      <section className="csdi-context-grid">
+        <div><p className="eyebrow">The setting</p><p>PhysioCGM combines glucose with wearable signals such as heart rate, breathing, electrodermal activity, temperature, and movement from 10 adults with Type 1 Diabetes over up to 17 days.</p></div>
+        <div><p className="eyebrow">Why missingness matters</p><p>Sensor replacement, connectivity loss, and activity create gaps. In a closed-loop insulin setting, a plausible-looking but wrong reconstruction can be more dangerous than an explicit missing value.</p></div>
+        <div><p className="eyebrow">The comparison</p><p>Traditional baselines versus two diffusion approaches across random masking, continuous blackouts, and missingness shaped by real sensor-dropout patterns.</p></div>
       </section>
 
-      <section className="csdi-boundary-band">
-        <div><span>Practical reliability boundary</span><strong>≈ 1 hour</strong><p>CSDI remained comparatively useful through shorter gaps, but performance deteriorated sharply as continuous missingness grew longer.</p></div>
-        <div><span>2-hour blackout</span><strong>0.200</strong><p>hypoglycemia sensitivity for the 7-channel model</p></div>
-        <div><span>Real-world gap study</span><strong>242</strong><p>naturally occurring sensor gaps used to build a semi-synthetic evaluation distribution</p></div>
-      </section>
-
-      <section className="section csdi-baseline-section">
-        <div className="section-heading wide-heading">
-          <div><p className="section-number">01 / Complexity is conditional</p><h2>Simple interpolation was hard to beat when the gap was easy.</h2></div>
-          <p>Under 30% random missingness, linear interpolation achieved mean RMSE 5.04 mg/dL, better point accuracy than the diffusion models in that easy regime. But point accuracy alone did not tell the whole clinical story.</p>
+      <section className="csdi-story-section">
+        <div className="csdi-prose">
+          <p className="csdi-dropcap">The first result challenged the reason for using diffusion at all. Under 30% random missingness, linear interpolation achieved the best mean point accuracy: RMSE 5.04 mg/dL.</p>
+          <p>That was not a failure of the project. It was the first useful boundary. When gaps are short and scattered, nearby glucose observations already contain enough local information that a sophisticated generative model may simply be unnecessary.</p>
         </div>
-        <div className="accuracy-vs-safety">
-          <article><p className="eyebrow">Short, scattered gaps</p><strong>5.04 mg/dL</strong><h3>Linear interpolation RMSE</h3><p>Strong local interpolation when nearby glucose observations remain informative.</p></article>
-          <div className="contrast-arrow">→</div>
-          <article className="clinical-card"><p className="eyebrow">What point RMSE misses</p><strong>0</strong><h3>Hypoglycemia sensitivity for interpolation</h3><p>The project’s cross-method comparison found that the strongest point baseline failed to detect hypoglycemic events across scenarios.</p></article>
-        </div>
-      </section>
-
-      <section className="section csdi-reliability-section">
-        <div className="section-heading wide-heading">
-          <div><p className="section-number">02 / Reliability decays with gap length</p><h2>Error rises while clinically important sensitivity collapses.</h2></div>
-          <p>The 7-channel CSDI model behaved very differently across missingness regimes. This made gap length itself a decision variable: not every missing segment should be treated as equally reconstructable.</p>
-        </div>
-        <div className="reliability-chart">
-          {reliabilityRows.map((row)=><div className="reliability-row" key={row.label}>
-            <div className="reliability-label"><strong>{row.label}</strong><span>RMSE {row.rmse.toFixed(2)} · Hypo sens {row.sens.toFixed(3)}</span></div>
-            <div className="reliability-track"><i style={{width:row.width+'%'}}></i></div>
-            <div className="sensitivity-dot-wrap"><i style={{left:(row.sens*100)+'%'}}></i></div>
-          </div>)}
-          <div className="reliability-legend"><span>Bar length → RMSE severity</span><span>Dot position → hypoglycemia sensitivity</span></div>
-        </div>
-      </section>
-
-      <section className="section multimodal-section">
-        <div className="section-heading wide-heading">
-          <div><p className="section-number">03 / When do extra sensors help?</p><h2>Multimodal value emerged only when glucose lost its own context.</h2></div>
-          <p>Random missingness showed little practical advantage from adding auxiliary wearable signals. Under a 2-hour blackout, however, cross-modal conditioning nearly doubled hypoglycemia sensitivity.</p>
-        </div>
-        <div className="multimodal-compare">
-          <article><span>Random 30%</span><div className="dual-metric"><b>0.811</b><em>7-channel</em><b>0.792</b><em>glucose only</em></div><p>Difference was small and within the broader evidence of fold-to-fold variation.</p></article>
-          <article className="multimodal-highlight"><span>Blackout 2h</span><div className="dual-metric"><b>0.200</b><em>7-channel</em><b>0.107</b><em>glucose only</em></div><strong>≈1.9× sensitivity</strong><p>Auxiliary physiology became useful after glucose temporal context was severely disrupted.</p></article>
-        </div>
-      </section>
-
-      <section className="section realworld-gap-section">
-        <div className="section-heading wide-heading">
-          <div><p className="section-number">04 / Simulate missingness that looks real</p><h2>Real sensor dropout has a long tail.</h2></div>
-          <p>Because naturally missing values do not come with ground truth, the project extracted the empirical gap-length distribution from raw timestamps, then applied it to complete segments to create a semi-synthetic benchmark with realistic missingness and known answers.</p>
-        </div>
-        <div className="gap-stats">
-          <article><strong>110 min</strong><span>median observed gap</span></article>
-          <article><strong>4.5 h</strong><span>75th percentile</span></article>
-          <article><strong>44%</strong><span>of gaps between 1–4 hours</span></article>
-          <article><strong>31.71</strong><span>mg/dL RMSE under semi-synthetic real-world missingness</span></article>
-        </div>
-      </section>
-
-      <section className="section calibration-section">
-        <div className="section-heading wide-heading">
-          <div><p className="section-number">05 / Does the model know when it is uncertain?</p><h2>Long gaps broke calibration, not just accuracy.</h2></div>
-          <p>Random-missing scenarios tracked the ideal calibration line closely. Under 2-hour blackout, empirical coverage fell systematically below nominal coverage: the model became over-confident exactly when reconstruction was hardest.</p>
-        </div>
-        <div className="calibration-card">
-          <div className="calibration-plot">
-            <div className="calibration-axis y"></div><div className="calibration-axis x"></div>
-            <i className="perfect-line"></i><i className="random-line"></i><i className="blackout-line"></i>
-            <span className="cal-label ideal">perfect calibration</span><span className="cal-label blackout">2h blackout: under-coverage</span>
+        <EvidenceImage asset={assets.random_missing_comparison} title="Random 30% missingness benchmark" alt="Original report comparison of interpolation and diffusion models under random missingness" fallback={
+          <div className="csdi-baseline-fallback">
+            <article><span>Linear interpolation</span><strong>5.04</strong><p>mean RMSE mg/dL</p></article>
+            <i>vs</i>
+            <article><span>CSDI</span><strong>6.88</strong><p>mean RMSE mg/dL</p></article>
           </div>
-          <div className="calibration-copy"><span>Clinical implication</span><h3>Uncertainty can fail before the user notices.</h3><p>A probabilistic model is valuable only if its intervals remain informative. Long continuous gaps reduced both point reliability and confidence-interval calibration.</p></div>
-        </div>
+        } />
+        <div className="csdi-turn"><span>First turn</span><strong>For easy gaps, the simple method deserved to win.</strong></div>
       </section>
 
-      <section className="section ownership-section">
-        <div className="section-heading wide-heading"><div><p className="section-number">06 / What I built</p><h2>The CSDI pipeline, evaluation system, and experimental variants.</h2></div><p>The report attributes the complete CSDI engineering pipeline to me: data loading, seven-channel feature extraction, 48-step windows, scenario-specific execution scripts, more than ten training runs, eight additional CV runs, real-world gap analysis, seven clinical metrics, and the CSDI visualizations.</p></div>
+      <section className="csdi-story-section alternate">
+        <div className="csdi-prose">
+          <p>But random masking is not how sensors usually fail. Real devices disappear for continuous stretches, and the length of that blackout changes the information available to any imputer.</p>
+          <p>As the gap grew, CSDI's error rose and hypoglycemia sensitivity collapsed. Performance was comparatively stable through gaps of roughly one hour; by two hours, sensitivity fell to 0.200 and the reconstruction became difficult to justify clinically.</p>
+        </div>
+        <EvidenceImage asset={assets.gap_reliability} title="Imputation quality versus gap length" alt="Original report figure showing RMSE and hypoglycemia sensitivity by gap length" fallback={<ReliabilityFallback />} />
+        <div className="csdi-turn"><span>Second turn</span><strong>The real decision variable was not model family. It was gap length.</strong></div>
+      </section>
+
+      <section className="csdi-story-section">
+        <div className="csdi-prose">
+          <p>The multimodal design then produced another conditional result. Adding auxiliary physiology barely changed performance under random missingness, where glucose still had plenty of its own temporal context.</p>
+          <p>Under a two-hour blackout, however, the seven-channel model reached hypoglycemia sensitivity of 0.200 versus 0.107 for glucose alone—about a 1.9× improvement. Extra sensors became useful precisely when the primary signal could no longer explain itself.</p>
+        </div>
+        <EvidenceImage asset={assets.cross_modal_ablation} title="Cross-modal ablation" alt="Original report comparison of seven-channel and glucose-only CSDI" fallback={
+          <div className="multimodal-compare csdi-multimodal-compact">
+            <article><span>Random 30%</span><div className="dual-metric"><b>0.811</b><em>7-channel</em><b>0.792</b><em>glucose only</em></div><p>Little practical difference.</p></article>
+            <article className="multimodal-highlight"><span>Blackout 2h</span><div className="dual-metric"><b>0.200</b><em>7-channel</em><b>0.107</b><em>glucose only</em></div><strong>≈1.9× sensitivity</strong></article>
+          </div>
+        } />
+        <div className="csdi-turn"><span>Third turn</span><strong>Multimodal data mattered most when the main modality lost its own context.</strong></div>
+      </section>
+
+      <section className="csdi-story-section alternate">
+        <div className="csdi-prose">
+          <p>To move beyond hand-designed masks, we extracted the empirical gap-length distribution from the raw timestamps. Naturally missing values have no ground truth, so we replayed that distribution onto complete segments to create realistic missingness with known answers.</p>
+          <p>The real-world distribution was long-tailed: median gap about 110 minutes, 75th percentile about 4.5 hours, and 44% of gaps between one and four hours. Under this semi-synthetic benchmark, CSDI RMSE reached 31.71 mg/dL and hypoglycemia sensitivity fell to 0.190.</p>
+        </div>
+        <EvidenceImage asset={assets.real_world_gaps} title="Real-world gap distribution" alt="Original report figure describing observed PhysioCGM sensor gaps" fallback={
+          <div className="gap-stats">
+            <article><strong>110 min</strong><span>median observed gap</span></article>
+            <article><strong>4.5 h</strong><span>75th percentile</span></article>
+            <article><strong>44%</strong><span>of gaps between 1–4 hours</span></article>
+            <article><strong>31.71</strong><span>mg/dL RMSE under realistic missingness</span></article>
+          </div>
+        } />
+      </section>
+
+      <section className="csdi-story-section">
+        <div className="csdi-prose">
+          <p>A probabilistic model should ideally know when it is uncertain. That became the final safety test.</p>
+          <p>Under random missingness, the confidence intervals were reasonably calibrated. Under long blackouts, empirical coverage dropped below nominal coverage: the model became over-confident at the same time its point estimates were becoming less reliable.</p>
+        </div>
+        <EvidenceImage asset={assets.calibration} title="Calibration under easy and hard missingness" alt="Original report calibration analysis for CSDI confidence intervals" fallback={
+          <div className="calibration-card">
+            <div className="calibration-plot"><div className="calibration-axis y"></div><div className="calibration-axis x"></div><i className="perfect-line"></i><i className="random-line"></i><i className="blackout-line"></i><span className="cal-label ideal">ideal</span><span className="cal-label blackout">2h blackout: under-coverage</span></div>
+            <div className="calibration-copy"><span>Safety implication</span><h3>Uncertainty can fail before the user notices.</h3><p>A confidence interval is only useful if its stated confidence still means something under the hard cases.</p></div>
+          </div>
+        } />
+        <div className="csdi-turn"><span>Final turn</span><strong>The model did not only become less accurate after long gaps. It became too confident about being wrong.</strong></div>
+      </section>
+
+      <section className="csdi-story-section alternate">
+        <div className="csdi-prose">
+          <p>My contribution was the CSDI engineering layer that made these comparisons possible: adapting the data loader to the PhysioCGM timestep format, extracting seven channels, building 48-step windows, running scenario-specific experiments, and implementing the clinical evaluation suite.</p>
+          <p>The resulting recommendation is deliberately conditional: interpolation is enough for easy local gaps; CSDI adds value as gaps become harder; auxiliary physiology becomes meaningful when glucose context disappears; beyond roughly two hours, the system should stop presenting imputation as if it were dependable.</p>
+        </div>
         <div className="csdi-build-grid">
           <article><span>7 channels</span><h3>Multimodal CSDI</h3><p>Glucose plus auxiliary physiological signals.</p></article>
           <article><span>48 steps</span><h3>Windowed pipeline</h3><p>Validated loading, feature extraction, normalization, and dataloader integrity.</p></article>
-          <article><span>7 metrics</span><h3>Clinical evaluation</h3><p>MAE, RMSE, CRPS, hypo sensitivity/specificity, TIR error, Clarke Error Grid.</p></article>
-          <article><span>5-fold CV</span><h3>Robustness checks</h3><p>Used to distinguish meaningful cross-modal effects from fold-to-fold noise.</p></article>
+          <article><span>7 metrics</span><h3>Clinical evaluation</h3><p>Point error, probabilistic quality, event sensitivity, TIR, and Clarke Error Grid.</p></article>
+          <article><span>5-fold CV</span><h3>Robustness checks</h3><p>Separated meaningful cross-modal gains from fold-to-fold noise.</p></article>
         </div>
       </section>
 
-      <section className="section closing-insight">
-        <p className="section-number">Key takeaway</p>
-        <h2>The value of probabilistic imputation was not simply a lower error. It was identifying when missing glucose could still be reconstructed—and when the model should no longer be trusted.</h2>
+      <section className="csdi-editorial-ending">
+        <p className="eyebrow">What the project changed</p>
+        <h2>The safest imputation system is not the one that always fills the gap. It is the one that knows when the gap has become too hard.</h2>
+        <p>The project moved from model comparison to a reliability policy: choose complexity conditionally, use multimodal information when the primary signal loses context, and expose a practical stop-trusting boundary instead of forcing a prediction through every missing segment.</p>
         <div className="project-actions"><Link className="button secondary" to="/work">Back to all work</Link></div>
       </section>
-    </>
+    </article>
   )
 }

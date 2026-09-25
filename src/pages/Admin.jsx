@@ -307,12 +307,11 @@ function ProjectAssetsEditor() {
 
       <section className="asset-group">
         <p className="eyebrow">CSDI / CGM visuals</p>
-        <p className="admin-help">Original report figures work well here because the story depends heavily on missingness regime and calibration.</p>
-        <AssetRow projectId="csdi-imputation" assetKey="random_missing_comparison" title="Random 30% benchmark" accept="image/*" help="A clean figure comparing interpolation and diffusion performance under random missingness; the probabilistic best/typical/challenging figure is also suitable." />
-        <AssetRow projectId="csdi-imputation" assetKey="gap_reliability" title="Imputation quality vs gap length" accept="image/*" help="The report figure plotting RMSE and hypoglycemia sensitivity across gap length." />
-        <AssetRow projectId="csdi-imputation" assetKey="cross_modal_ablation" title="Cross-modal ablation" accept="image/*" help="A figure or table comparing 7-channel vs glucose-only CSDI under random and 2-hour blackout settings." />
-        <AssetRow projectId="csdi-imputation" assetKey="real_world_gaps" title="Real-world gap distribution" accept="image/*" help="The report visualization of the empirical PhysioCGM gap-length distribution / semi-synthetic real-world benchmark." />
-        <AssetRow projectId="csdi-imputation" assetKey="calibration" title="Calibration / coverage analysis" accept="image/*" help="The figure showing confidence-interval calibration or coverage deterioration for long blackout gaps." />
+        <p className="admin-help">Four original report outputs are enough for the public story. The real-world gap distribution is summarized directly in the page, so no separate upload is needed.</p>
+        <AssetRow projectId="csdi-imputation" assetKey="random_missing_comparison" title="Probabilistic imputation · Random 30%" accept="image/*" help="Upload the best / typical / challenging figure showing ground truth, CSDI median, linear interpolation, and 50% / 90% confidence intervals." />
+        <AssetRow projectId="csdi-imputation" assetKey="gap_reliability" title="Imputation quality vs gap length" accept="image/*" help="Upload the RMSE + hypoglycemia-sensitivity figure with the clinical-reliability degradation region." />
+        <AssetRow projectId="csdi-imputation" assetKey="cross_modal_ablation" title="7-channel vs 1-channel ablation" accept="image/*" help="Upload Table 3 comparing multimodal and glucose-only CSDI across random missingness and blackout scenarios." />
+        <AssetRow projectId="csdi-imputation" assetKey="calibration" title="Uncertainty calibration of CSDI predictions" accept="image/*" help="Upload Figure 4 showing Random 10%, Random 50%, Blackout 2h, and the perfect-calibration diagonal." />
       </section>
 
       <section className="asset-group">

@@ -166,6 +166,7 @@ export default function CapstoneProject() {
         <p className="kicker">Production Scheduling · Working Capital · 2026</p>
         <h1>A profitable manufacturer can still run short of cash.</h1>
         <p className="cap-story-lead">One reason is easy to miss: cash can be sitting on the factory floor as unfinished inventory.</p>
+        <div className="publication-note"><strong>Acknowledgement.</strong> With thanks to Professor Borzou Rostami, Director of the AI Centre for Decision Analytics (AI4DA), for supervising the project, and Dr. Saleh Farham, Research and Academic Coordinator at AI4DA, for guidance on project scope and methodology.</div>
         <MoneyLockedVisual />
         <div className="cap-story-question">What if the problem is not selling too little—but producing too much <em>too early</em>?</div>
       </section>

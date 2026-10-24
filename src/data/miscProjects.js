@@ -21,10 +21,11 @@ export const miscProjects = [
   },
   {
     id: 'dqn-gridworld', area: 'AI & Data Science', year: '2026', depth: 'compact',
-    title: 'Reward Shaping in a Custom Grid-World DQN', eyebrow: 'Reinforcement Learning',
-    metric: 'Episode 145', metricLabel: 'optimal route discovered after reward shaping solved the exploration trap',
-    summary: 'Extended a simple grid world with toroidal movement, terrain costs, sprint actions, sparse rewards, and a reward-shaping experiment.',
-    tags: ['DQN', 'Reward Shaping', 'RL', 'Python'],
+    title: 'Reward Shaping in a Custom Grid-World DQN', eyebrow: 'Reinforcement Learning · Reproducibility',
+    metric: '1013 ↔ −33', metricLabel: 'reported successful return versus the final saved notebook run',
+    summary: 'Extended a 6×6 toroidal grid world with terrain costs, dash actions, local observations, and beacon reward shaping. A reported 1013-return run contrasted with a preserved −33 run that cycled after one crystal—turning the project into a study of exploration, reward design, and evidence quality.',
+    tags: ['DQN', 'Reward Shaping', 'RL', 'PyTorch'],
+    githubUrl: 'https://github.com/LokiLJ/dqn-gridworld-reward-shaping',
   },
   {
     id: 'database-loan-analytics', area: 'Software', year: '2025', depth: 'compact',

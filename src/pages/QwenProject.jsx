@@ -79,8 +79,9 @@ export default function QwenProject() {
         <div className="special-hero-nav"><Link className="back-link" to="/work">← Selected work</Link><span>AI & Data Science · 2026</span></div>
         <p className="kicker">Qwen3-14B · LoRA · Reasoning transfer</p>
         <h1>Fine-tuning changed what the model paid attention to.</h1>
-        <p className="special-deck">I fine-tuned the same 14B base model on two teaching domains—mathematical word problems and multi-turn code feedback—to ask a narrower question than “does fine-tuning improve performance?”: what behaviour actually changes, and where does that change stop transferring?</p>
-        <div className="project-role">Individual assignment · Designed and implemented the fine-tuning, transfer-probe, and classical-baseline workflow.</div>
+        <p className="special-deck">I adapted a course-provided QLoRA workflow to two teaching domains—mathematical word problems and multi-turn code feedback—to ask a narrower question than “does fine-tuning improve performance?”: what visible response behaviour changes, and where does that change stop transferring?</p>
+        <div className="project-role">MMA 606 course project · Dataset choice, training configuration, probe design, classical baseline, and interpretation are my work; the training scaffold was adapted from the course starter workflow.</div>
+        <div className="project-actions qwen-hero-actions"><a className="button secondary" href="https://github.com/LokiLJ/qwen3-lora-reasoning-transfer" target="_blank" rel="noreferrer">View public repository ↗</a></div>
       </header>
 
       <section className="qwen-context-grid">
@@ -110,7 +111,7 @@ export default function QwenProject() {
       <section className="qwen-story-section">
         <div className="qwen-prose">
           <p>If that habit was real, it should survive prompts that did not look like the training examples. So I deliberately tested awkward transfer cases: GMAT wording traps, Visual Basic despite its near-absence from the code data, and a Python default-parameter question whose answer depends on the object model.</p>
-          <p>The first two transferred surprisingly well. The last one did not. That boundary mattered more to me than another benchmark gain.</p>
+          <p>The first two produced encouraging transfer examples. The last one did not. Because these were manually selected qualitative probes rather than a contamination-controlled benchmark, I treat them as evidence of a boundary worth investigating—not as proof of general reasoning improvement.</p>
         </div>
         <div className="transfer-table">
           <div className="transfer-head"><span>Probe</span><span>Starting point</span><span>After fine-tuning</span></div>
@@ -122,8 +123,8 @@ export default function QwenProject() {
 
       <section className="qwen-story-section alternate">
         <div className="qwen-prose">
-          <p>I also built a deliberately simple baseline on the ORCA data: 2,000 balanced problem–answer pairs, represented with 5,000 TF-IDF features and classified with Logistic Regression.</p>
-          <p>Its accuracy was 41.8%, below the 50% chance benchmark. That is not a like-for-like contest with a generative LLM, but it was useful evidence that surface lexical overlap alone was a poor representation for judging whether a mathematical answer was actually correct.</p>
+          <p>I also built a deliberately simple TF-IDF + Logistic Regression baseline on the ORCA data. The saved confusion matrix contains 1,000 test pairs and records 41.8% accuracy; the report and notebook disagree on the exact total sample count, so I do not present a reconstructed training-set size here.</p>
+          <p>The result is not a like-for-like contest with a generative LLM. It is contextual evidence that this particular surface-text representation did not separate the synthetic matched and mismatched pairs well—and the public repository documents leakage, split, and reproducibility limitations explicitly.</p>
         </div>
         <div className="baseline-visual qwen-baseline-compact">
           <article><span>TF-IDF + Logistic Regression</span><strong>41.8%</strong><div className="accuracy-track"><i style={{width:'41.8%'}}></i><b>50% chance</b></div><p>Words were present; the relation between question and answer was not represented well enough.</p></article>
@@ -133,8 +134,8 @@ export default function QwenProject() {
       <section className="qwen-editorial-ending">
         <p className="eyebrow">What changed in my view</p>
         <h2>Fine-tuning can reshape attention and checking behaviour without guaranteeing deeper understanding.</h2>
-        <p>The useful result was not “the tuned model is better.” It was a more precise boundary: adapters can compress familiar reasoning, increase sensitivity to recurring traps, and transfer those habits surprisingly far—but they still inherit conceptual holes the training examples never force them to resolve.</p>
-        <div className="project-actions"><Link className="button secondary" to="/work">Back to all work</Link></div>
+        <p>The useful result was not “the tuned model is better.” In selected prompts, adaptation changed completion, concision, wording sensitivity, and code consistency; other prompts barely changed, and the mutable-default question remained unanswered. The project is therefore best read as a behavioural probe with clear limits, not a benchmark of general reasoning.</p>
+        <div className="project-actions"><a className="button primary" href="https://github.com/LokiLJ/qwen3-lora-reasoning-transfer" target="_blank" rel="noreferrer">Explore code & experiment notes ↗</a><Link className="button secondary" to="/work">Back to all work</Link></div>
       </section>
     </article>
   )

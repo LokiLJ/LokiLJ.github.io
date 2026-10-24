@@ -24,6 +24,7 @@ function CompactCard({ project }) {
       <h3>{project.title}</h3>
       <p>{project.summary}</p>
       <div className="tags compact-tags">{project.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
+      {project.githubUrl && <a className="arrow-link archive-github-link" href={project.githubUrl} target="_blank" rel="noreferrer">View GitHub ↗</a>}
     </article>
   )
 }

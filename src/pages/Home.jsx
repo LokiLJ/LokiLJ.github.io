@@ -40,7 +40,7 @@ export default function Home() {
 
       <section className="section featured-section">
         <div className="section-heading wide-heading">
-          <div><p className="section-number">01 / Featured work</p><h2>Three projects that show how I think.</h2></div>
+          <div><p className="section-number">01 / Featured work</p><h2>Selected projects that show how I think.</h2></div>
           <p>These are not grouped by algorithm. Each starts with a misleading first impression and ends with a different decision than the original problem suggested.</p>
         </div>
         <div className="featured-stack">{featuredProjects.map((project, index) => <FeaturedCard key={project.id} project={project} index={index} />)}</div>

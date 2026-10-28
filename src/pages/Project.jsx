@@ -6,6 +6,7 @@ import QwenProject from './QwenProject'
 import NurseProject from './NurseProject'
 import CSDIProject from './CSDIProject'
 import LoanStrategyProject from './LoanStrategyProject'
+import EnergyProject from './EnergyProject'
 
 export default function Project() {
   const { projectId } = useParams()
@@ -17,6 +18,7 @@ export default function Project() {
     'nurse-staffing': NurseProject,
     'csdi-cgm': CSDIProject,
     'loan-strategy': LoanStrategyProject,
+    'utility-supply-chain': EnergyProject,
   }
 
   const SpecialPage = specialPages[projectId]
